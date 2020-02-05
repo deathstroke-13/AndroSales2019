@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_margin="5dp"
+    card_view_cardCornerRadius="10dp"
+    card_view_cardElevation="5dp"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:id="@+id/thumbnail"
+            android:padding="5dp"
+            android:src="@drawable/ic_photo_camera_black"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtNamaOutlet"
+            android:paddingTop="5dp"
+            android:text="Nama Otlet"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Text"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:layout_below="@+id/txtNamaOutlet"
+            android:id="@+id/txtReportKUnjungan"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Text"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/txtReportKUnjungan"
+            android:id="@+id/txtJam"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Text"
+            android:visibility="gone"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:layout_below="@+id/txtJam"
+            android:id="@+id/txtTanggal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Text"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:layout_below="@+id/txtTanggal"
+            android:id="@+id/txtKm"/>
+
+        <!-- hide -->
+        <TextView
+            android:id="@+id/txtGambar"
+            android:visibility="gone"
+            android:layout_toRightOf="@+id/thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtKm"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/txtIdKujungan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"/>
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/txtLongi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"/>
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/txtLat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"/>
+
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>

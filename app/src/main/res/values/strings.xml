@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">DMLT-MOB Online</string>
+    <string name="login_title">Log In</string>
+    <string name="main_title">DMLT-MOB Online</string>
+    <string name="kunjungan_title">Kunjungan</string>
+    <string name="biaya_bbm_title">Biaya BBM</string>
+    <string name="produk_title">Pilih Produk</string>
+    <string name="penjualan_title">Penjualan</string>
+    <string name="laporan_title">Laporan</string>
+    <string name="laporan_detail_title">Laporan Detail</string>
+
+    <string name="Imei">IMEI Number</string>
+    <string name="login_success">login success</string>
+    <string name="login">LOGIN</string>
+    <string name="Username">Username</string>
+    <string name="Password">Password</string>
+    <string name="forgot_your_password">Forgot your password ?</string>
+    <string name="go">LOG IN</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="next">NEXT</string>
+    <string name="register">REGISTER</string>
+
+    <string name="ip_num">IP Number</string>
+    <string name="path_folder">Folder Name</string>
+    <string name="bt_save">Save</string>
+    <string name="setting_title">Setting</string>
+    <string name="absensi_title">Absensi</string>
+    <string name="bt_absensi">Simpan Absensi</string>
+    <string name="bt_kunjungan">Simpan Kunjungan</string>
+    <string name="bt_penjualan">Simpan Penjualan</string>
+
+    <string name="txt_menu_logout">Log Out</string>
+    <string name="txt_menu_about">Tentang Kami</string>
+    <string name="txt_menu_pointing">Pointing</string>
+    <string name="txt_menu_absen">Absensi</string>
+    <string name="txt_menu_lap">Laporan</string>
+    <string name="txt_menu_biayabbm">Biaya BBM</string>
+    <string name="txt_menu_penjualan">Penjualan</string>
+    <string name="txt_menu_kunjungan">Kunjungan</string>
+
+    <string name="txt_odometer">Odometer</string>
+    <string name="txt_namaoutlet">Nama Outlet</string>
+    <string name="txt_ket">Keterangan</string>
+    <string name="txt_absensi">Absensi</string>
+    <string name="txt_masuk">Masuk</string>
+    <string name="txt_pulang">Pulang</string>
+    <string name="txt_photo">Photo</string>
+    <string name="txt_id_transaksi">No. Transaksi</string>
+    <string name="txt_selesai">Selesai</string>
+    <string name="txt_tanggal">Tanggal</string>
+    <string name="txt_cari">Cari</string>
+    <string name="txt_status_gps">Status Koordinat: </string>
+    <string name="tanggalAwal">Tanggal Awal</string>
+    <string name="tanggalAkhir">Tanggal Akhir</string>
+    <string name="tanggal">Tanggal</string>
+    <string name="selanjutnya">Selanjutnya</string>
+
+
+    <string name="start_updates">START LOCATION UPDATES</string>
+    <string name="stop_updates">STOP LOCATION UPDATES</string>
+    <string name="get_last_location">GET LAST LOCATION</string>
+</resources>
