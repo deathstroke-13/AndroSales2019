@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="top"
+    android:orientation="vertical"
+    android:background="#3c8e8e8e"
+    tools:context=".KunjunganActivity">
+
+
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageViewGreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_my_location_green"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/imageViewRed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_my_location_red"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/text_stat_gps"
+                android:visibility="gone"
+                android:text="@string/txt_status_gps"
+                android:paddingLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/indi"
+                android:paddingLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/text_stat_gps" />
+
+            <TextView
+                android:text="@string/txt_photo"
+                android:paddingLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:id="@+id/searchImageButton"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:padding="10dp"
+                android:background="#F28033"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:src="@android:drawable/ic_menu_camera"
+                />
+
+            <TextView
+                android:text="@string/txt_namaoutlet"
+                android:paddingLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:id="@+id/qrbutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="#F28033"
+                android:padding="10dp"
+                android:src="@android:drawable/ic_menu_camera" />
+
+            <EditText
+                android:id="@+id/et_namaoutlet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@android:color/white"
+                android:hint="@string/txt_namaoutlet"
+                android:inputType="textPersonName"
+                android:padding="10dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:text="@string/txt_ket"
+                android:paddingLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/et_ket"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@android:color/white"
+                android:hint="@string/txt_ket"
+                android:inputType="textPersonName"
+                android:padding="10dp" />
+
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="70dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:id="@+id/imageView" />
+
+            <!--hidden-->
+            <EditText
+                android:id="@+id/etLocationLat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:visibility="gone"
+                android:background="@android:color/white"
+                android:padding="10dp" />
+
+            <EditText
+                android:id="@+id/etLocationLong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:visibility="gone"
+                android:background="@android:color/white"
+                android:padding="10dp" />
+
+
+            <!--end hidden-->
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        android:layout_gravity="bottom">
+        <Button
+            android:id="@+id/button_simpan_kunjungan"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="#435E7D"
+            android:textColor="@color/colorWhite"
+            android:padding="10dp"
+            android:text="@string/bt_kunjungan"
+            android:visibility="gone"
+            android:drawableLeft="@drawable/ic_save_white"
+            />
+
+    </LinearLayout>
+</LinearLayout>
