@@ -29,7 +29,7 @@
                     android:layout_width="8dp"
                     android:layout_height="match_parent"
                     android:background="#2fa881"
-                    />
+                    android:layout_alignParentLeft="true" />
                 <TextView
                     android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
                     android:textColor="#FFCC00"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    />
+                    android:layout_marginLeft="50dp" />
             </RelativeLayout>
             <LinearLayout
                 android:layout_marginTop="10dp"
@@ -47,7 +47,9 @@
                 android:paddingEnd="30dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="50dp">
+                android:layout_height="50dp"
+                android:paddingLeft="50dp"
+                android:paddingRight="30dp">
                 <android.support.design.widget.TextInputLayout
                     android:textColorHint="#c5c5c5"
                     android:layout_width="match_parent"

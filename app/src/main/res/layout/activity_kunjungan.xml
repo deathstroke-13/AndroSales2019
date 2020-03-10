@@ -74,6 +74,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
+            <ImageButton
+                android:id="@+id/qrbutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="#F28033"
+                android:padding="10dp"
+                android:visibility="gone"
+                android:src="@android:drawable/ic_menu_camera" />
+
             <EditText
                 android:id="@+id/et_namaoutlet"
                 android:layout_width="match_parent"
@@ -82,7 +95,8 @@
                 android:background="@android:color/white"
                 android:hint="@string/txt_namaoutlet"
                 android:inputType="textPersonName"
-                android:padding="10dp" />
+                android:padding="10dp"
+                />
 
             <TextView
                 android:text="@string/txt_ket"

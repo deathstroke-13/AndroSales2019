@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
@@ -152,6 +153,8 @@ public class PenjualanActivity extends AppCompatActivity {
 
     private static final int REQUEST_CHECK_SETTINGS = 100;
 
+    public String fake_status="0";
+
 
     // bunch of location related apis
     private FusedLocationProviderClient mFusedLocationClient;
@@ -183,24 +186,24 @@ public class PenjualanActivity extends AppCompatActivity {
 
         URL = "http://" + IPADDR + "/" + NMSERVER + "/";
 
-        imgButton = (ImageButton) findViewById(R.id.searchImageButton);
-        imageView = (ImageView) findViewById(R.id.imageView);
-        bt_penjualan  = (Button) findViewById(R.id.button_simpan_penjualan);
+        imgButton = findViewById(R.id.searchImageButton);
+        imageView = findViewById(R.id.imageView);
+        bt_penjualan  = findViewById(R.id.button_simpan_penjualan);
         byteArrayOutputStream = new ByteArrayOutputStream();
 
 
-        et_namaoutlet   = (EditText) findViewById(R.id.et_namaoutlet);
-        et_ket          = (EditText) findViewById(R.id.et_ket);
-        etLocationLat   = (EditText) findViewById(R.id.etLocationLat);
-        etLocationLong  = (EditText) findViewById(R.id.etLocationLong);
-        etNoTransaksi   = (EditText) findViewById(R.id.et_notransaksi);
+        et_namaoutlet   = findViewById(R.id.et_namaoutlet);
+        et_ket          = findViewById(R.id.et_ket);
+        etLocationLat   = findViewById(R.id.etLocationLat);
+        etLocationLong  = findViewById(R.id.etLocationLong);
+        etNoTransaksi   = findViewById(R.id.et_notransaksi);
 
         etNoTransaksi.setText(getRandomString(15));
         etNoTransaksi.setEnabled(false);
         et_namaoutlet.setFocusable(true);
 
-        imgGreen = (ImageView) findViewById(R.id.imageViewGreen);
-        imgRed  = (ImageView) findViewById(R.id.imageViewRed);
+        imgGreen = findViewById(R.id.imageViewGreen);
+        imgRed  = findViewById(R.id.imageViewRed);
 
 
         imgButton.setOnClickListener(new View.OnClickListener() {
@@ -294,7 +297,7 @@ public class PenjualanActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         RegisterAPI api = retrofit.create(RegisterAPI.class);
-        Call<Value> call = api.penjualan(namaoutlet, ket, LocationLong, LocationLat, kodeImei, img_new_name, NoTransaksi);
+        Call<Value> call = api.penjualan(namaoutlet, ket, LocationLong, LocationLat, kodeImei, img_new_name, NoTransaksi, fake_status);
         call.enqueue(new Callback<Value>() {
             @Override
             public void onResponse(Call<Value> call, Response<Value> response) {
@@ -302,14 +305,17 @@ public class PenjualanActivity extends AppCompatActivity {
                 String message = response.body().getMessage();
                 progress.dismiss();
                 if (value.equals("1")) {
-                    UploadImageToServer();
+                    if(message =="timeout"){
+                        call.cancel();
+                    }else {
+                        UploadImageToServer();
 
-                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(PenjualanActivity.this, ProdukActivity.class);
-                    i.putExtra("NoTransaksi", NoTransaksi);
-                    startActivity(i);
-
-                    finish();
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(PenjualanActivity.this, ProdukActivity.class);
+                        i.putExtra("NoTransaksi", NoTransaksi);
+                        startActivity(i);
+                        finish();
+                    }
                 } else {
                     Toast.makeText(PenjualanActivity.this, message, Toast.LENGTH_SHORT).show();
                 }
@@ -319,6 +325,13 @@ public class PenjualanActivity extends AppCompatActivity {
             public void onFailure(Call<Value> call, Throwable t) {
                 t.printStackTrace();
                 progress.dismiss();
+                call.cancel();
+                if (call.isCanceled()) {
+                    Log.e("TAG", "request was cancelled");
+                }
+                else {
+                    Log.e("TAG", "other larger issue, i.e. no network connection?");
+                }
                 Toast.makeText(PenjualanActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -544,18 +557,32 @@ public class PenjualanActivity extends AppCompatActivity {
      */
     private void updateLocationUI() {
         if (mCurrentLocation != null) {
-            ((EditText)findViewById(R.id.etLocationLat)).setText(Double.toString(mCurrentLocation.getLatitude()));
-            ((EditText)findViewById(R.id.etLocationLong)).setText(Double.toString(mCurrentLocation.getLongitude()));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                //for counter fakeGPS using mock provider
+                if(mCurrentLocation.isFromMockProvider()){
+                    ((EditText) findViewById(R.id.etLocationLat)).setText(Double.toString(mCurrentLocation.getLatitude()));
+                    ((EditText) findViewById(R.id.etLocationLong)).setText(Double.toString(mCurrentLocation.getLongitude()));
+                    fake_status ="1";
+                    imgRed.setVisibility(View.GONE);
+                    imgGreen.setVisibility(View.VISIBLE);
+                }else {
+                    ((EditText) findViewById(R.id.etLocationLat)).setText(Double.toString(mCurrentLocation.getLatitude()));
+                    ((EditText) findViewById(R.id.etLocationLong)).setText(Double.toString(mCurrentLocation.getLongitude()));
 
-            imgGreen.setVisibility(View.VISIBLE);
-            imgRed.setVisibility(View.GONE);
+                    fake_status="0";
+                    imgGreen.setVisibility(View.VISIBLE);
+                    imgRed.setVisibility(View.GONE);
+                }
+            }
         }
         else{
             ((EditText)findViewById(R.id.etLocationLat)).setText("");
             ((EditText)findViewById(R.id.etLocationLong)).setText("");
+            fake_status="0";
             imgRed.setVisibility(View.VISIBLE);
             imgGreen.setVisibility(View.GONE);
         }
+
 
 
         //toggleButtons();

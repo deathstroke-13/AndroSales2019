@@ -20,6 +20,7 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -95,7 +96,7 @@ public class AbsensiActivity extends AppCompatActivity {
 
     public String URL;
 
-    String kodeImei, IPADDR, NMSERVER;
+    String kodeImei, IPADDR, NMSERVER, kodeNIK;
 
     ImageButton imgButton;
     ImageView imageView;
@@ -150,6 +151,7 @@ public class AbsensiActivity extends AppCompatActivity {
 
     // location last updated time
     private String mLastUpdateTime;
+    public String fake_status = "0";
 
     // location updates interval - 10sec
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
@@ -318,7 +320,7 @@ public class AbsensiActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RegisterAPI api = retrofit.create(RegisterAPI.class);
-        Call<Value> call = api.absensi(odometer, namaoutlet, ket, LocationLong, LocationLat, nilaiAbsen, kodeImei, img_new_name);
+        Call<Value> call = api.absensi(odometer, namaoutlet, ket, LocationLong, LocationLat, nilaiAbsen, kodeImei, img_new_name, fake_status);
         call.enqueue(new Callback<Value>() {
             @Override
             public void onResponse(Call<Value> call, Response<Value> response) {
@@ -326,12 +328,16 @@ public class AbsensiActivity extends AppCompatActivity {
                 String message = response.body().getMessage();
                 progress.dismiss();
                 if (value.equals("1")) {
-                    UploadImageToServer();
+                    if(message =="timeout"){
+                        call.cancel();
+                    }else {
+                        UploadImageToServer();
 
-                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                    Intent inLogin2 = new Intent(AbsensiActivity.this, MainActivity.class);
-                    startActivity(inLogin2);
-                    finish();
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        Intent inLogin2 = new Intent(AbsensiActivity.this, MainActivity.class);
+                        startActivity(inLogin2);
+                        finish();
+                    }
                 } else {
                     Toast.makeText(AbsensiActivity.this, message, Toast.LENGTH_SHORT).show();
                 }
@@ -341,7 +347,14 @@ public class AbsensiActivity extends AppCompatActivity {
             public void onFailure(Call<Value> call, Throwable t) {
                 t.printStackTrace();
                 progress.dismiss();
-                Toast.makeText(AbsensiActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                call.cancel();
+                if (call.isCanceled()) {
+                    Log.e("TAG", "request was cancelled");
+                }
+                else {
+                    Log.e("TAG", "other larger issue, i.e. no network connection?");
+                }
+                Toast.makeText(AbsensiActivity.this, "Data gagal di input, silahkan coba lagi", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -383,6 +396,7 @@ public class AbsensiActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     public void UploadImageToServer(){
 
         FixBitmap.compress(Bitmap.CompressFormat.JPEG, 40, byteArrayOutputStream);
@@ -569,31 +583,28 @@ public class AbsensiActivity extends AppCompatActivity {
      */
     private void updateLocationUI() {
         if (mCurrentLocation != null) {
-            /*
-            txtLocationResult.setText(
-                    "Lat: " + mCurrentLocation.getLatitude() + ", " +
-                            "Lng: " + mCurrentLocation.getLongitude()
-            );
-
-            // giving a blink animation on TextView
-            txtLocationResult.setAlpha(0);
-            txtLocationResult.animate().alpha(1).setDuration(300);
-
-            // location last updated time
-            txtUpdatedOn.setText("Last updated on: " + mLastUpdateTime);
-            */
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                ((EditText)findViewById(R.id.etLocationLat)).setText(Double.toString(mCurrentLocation.getLatitude()));
-                ((EditText)findViewById(R.id.etLocationLong)).setText(Double.toString(mCurrentLocation.getLongitude()));
+                //for counter fakeGPS using mock provider
+                if(mCurrentLocation.isFromMockProvider()){
+                    ((EditText) findViewById(R.id.etLocationLat)).setText(Double.toString(mCurrentLocation.getLatitude()));
+                    ((EditText) findViewById(R.id.etLocationLong)).setText(Double.toString(mCurrentLocation.getLongitude()));
+                    fake_status ="1";
+                    imgRed.setVisibility(View.GONE);
+                    imgGreen.setVisibility(View.VISIBLE);
+                }else {
+                    ((EditText) findViewById(R.id.etLocationLat)).setText(Double.toString(mCurrentLocation.getLatitude()));
+                    ((EditText) findViewById(R.id.etLocationLong)).setText(Double.toString(mCurrentLocation.getLongitude()));
 
-                imgGreen.setVisibility(View.VISIBLE);
-                imgRed.setVisibility(View.GONE);
+                    fake_status="0";
+                    imgGreen.setVisibility(View.VISIBLE);
+                    imgRed.setVisibility(View.GONE);
+                }
             }
         }
         else{
             ((EditText)findViewById(R.id.etLocationLat)).setText("");
             ((EditText)findViewById(R.id.etLocationLong)).setText("");
-
+            fake_status="0";
             imgRed.setVisibility(View.VISIBLE);
             imgGreen.setVisibility(View.GONE);
         }

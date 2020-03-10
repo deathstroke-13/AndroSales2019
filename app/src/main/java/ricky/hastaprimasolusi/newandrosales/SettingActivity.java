@@ -33,7 +33,7 @@ public class SettingActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.text_footer);
 
-        String version = "1.0";
+        String version = "1.51";
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = packageInfo.versionName;

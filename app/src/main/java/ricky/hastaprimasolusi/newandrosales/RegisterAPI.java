@@ -20,7 +20,9 @@ public interface RegisterAPI {
                        @Field("LocationLat") String LocationLat,
                        @Field("nilaiAbsen") String nilaiAbsen,
                        @Field("kodeImei") String kodeImei,
-                       @Field("image_data") String img_new_name);
+                       @Field("image_data") String img_new_name,
+                        @Field("fake_status") String fake_status);
+
 
     @FormUrlEncoded
     @POST("API/kunjungan.php")
@@ -39,7 +41,8 @@ public interface RegisterAPI {
                           @Field("LocationLat") String LocationLat,
                           @Field("kodeImei") String kodeImei,
                           @Field("image_data") String img_new_name,
-                          @Field("NoTransaksi") String NoTransaksi);
+                          @Field("NoTransaksi") String NoTransaksi,
+                          @Field("fake_status") String fake_status);
 
     @FormUrlEncoded
     @POST("API/tambah_penjualan.php")
@@ -75,6 +78,12 @@ public interface RegisterAPI {
     @POST("API/filter_laporan.php")
     Call<Value> filter(@Field("imei") String imei,
                        @Field("dateAwal") String dateAwal);
+
+    @FormUrlEncoded
+    @POST("API/slipgaji.php")
+    Call<Value> slipgaji(@Field("month") int month,
+                         @Field("selectedYear") String selectedYear,
+                         @Field("kodeImei") String kodeImei);
 /*
     @GET("view.php")
     Call<Value> view();

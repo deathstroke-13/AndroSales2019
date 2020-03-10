@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     String kodeImei,IPADDR,NMSERVER;
 
     private TextView textView;
-    Button btPenjualan, btAbsen, btKunjungan, btbiaya_bbm, bt_laporan;
+    Button btPenjualan, btAbsen, btKunjungan, btbiaya_bbm, bt_laporan, bt_slipgaji;
 
 
     @Override
@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         btKunjungan = (Button) findViewById(R.id.bt_kunjungan);
         btbiaya_bbm = (Button) findViewById(R.id.bt_biaya_bbm);
         bt_laporan = (Button) findViewById(R.id.bt_laporan);
+        bt_slipgaji = findViewById(R.id.bt_slipGaji);
 
         session = new SessionManager(getApplicationContext());
 
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         //footer text
         textView = findViewById(R.id.langTextView);
-        String version = "1.0";
+        String version = "1.51";
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = packageInfo.versionName;
@@ -60,6 +61,13 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         textView.setText("By PT. Hasta Prima Solusi - v." + version);
+        bt_slipgaji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                Intent intent = new Intent(MainActivity.this, SlipgajiActivity.class);
+                startActivity(intent);
+            }
+        });
 
         btAbsen.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
@@ -148,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-            Toast.makeText(getApplicationContext(), "PT. Hast Prima Solusi", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "PT. Hasta Prima Solusi", Toast.LENGTH_SHORT).show();
             return true;
 
             //Intent i = new Intent(MainActivity.this, AboutActivity.class);

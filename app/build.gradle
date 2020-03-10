@@ -7,7 +7,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 28
         versionCode 1
-        versionName "1.1"
+        versionName "1.51"
         multiDexEnabled true
         useLibrary 'org.apache.http.legacy'
     }
@@ -61,13 +61,15 @@ dependencies {
 
     implementation 'net.gotev:uploadservice:2.1'
 
-    //
-
     // Glide library
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
 
     // dexter runtime permissions
     implementation 'com.karumi:dexter:4.2.0'
+
+    //for scanner QR code
+    implementation 'me.dm7.barcodescanner:zxing:1.9'
+    implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
 
 }

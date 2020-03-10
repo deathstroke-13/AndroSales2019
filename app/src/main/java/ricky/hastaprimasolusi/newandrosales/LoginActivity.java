@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
 
         //footer text
         textView = findViewById(R.id.text_footer);
-        String version = "1.0";
+        String version = "1.51";
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = packageInfo.versionName;
@@ -136,6 +136,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         final String imei = manager.getDeviceId();
 
         etIMEI.setText(String.valueOf(imei));
+        //etIMEI.setText("865300048276503");
 
 
     }
@@ -161,6 +162,8 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         final String imei = manager.getDeviceId();
 
         etIMEI.setText(String.valueOf(imei));
+        //"865300048276503"
+        //etIMEI.setText("865300048276503");
     }
 
     @Override

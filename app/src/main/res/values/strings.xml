@@ -34,6 +34,7 @@
     <string name="txt_menu_pointing">Pointing</string>
     <string name="txt_menu_absen">Absensi</string>
     <string name="txt_menu_lap">Laporan</string>
+    <string name="txt_menu_slipgaji">Slip Gaji</string>
     <string name="txt_menu_biayabbm">Biaya BBM</string>
     <string name="txt_menu_penjualan">Penjualan</string>
     <string name="txt_menu_kunjungan">Kunjungan</string>
@@ -59,4 +60,9 @@
     <string name="start_updates">START LOCATION UPDATES</string>
     <string name="stop_updates">STOP LOCATION UPDATES</string>
     <string name="get_last_location">GET LAST LOCATION</string>
+
+    <string name="turn_off_flashlight">FlashLight on</string>
+    <string name="turn_on_flashlight">flashLight off</string>
+    <string name="title_activity_main">QR and Barcode Scanner</string>
+    <string name="message">Place a barcode inside the viewfinder rectangle to scan it.</string>
 </resources>

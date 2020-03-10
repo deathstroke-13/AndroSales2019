@@ -3,7 +3,11 @@ package ricky.hastaprimasolusi.newandrosales;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -11,6 +15,7 @@ import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
@@ -82,6 +87,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
 public class KunjunganActivity extends AppCompatActivity {
 
     SessionManager session;
@@ -90,7 +98,7 @@ public class KunjunganActivity extends AppCompatActivity {
 
     String kodeImei, IPADDR, NMSERVER;
 
-    ImageButton imgButton;
+    ImageButton imgButton, qrButton;
     ImageView imageView;
     Intent intent;
     Button bt_kunjungan;
@@ -101,7 +109,7 @@ public class KunjunganActivity extends AppCompatActivity {
     ByteArrayOutputStream byteArrayOutputStream;
     byte[] byteArray;
     String ConvertImage;
-
+    String fake_status;
     String ImageTag = "image_tag" ;
 
     String ImageName = "image_data";
@@ -182,6 +190,7 @@ public class KunjunganActivity extends AppCompatActivity {
         URL = "http://" + IPADDR + "/" + NMSERVER + "/";
 
         imgButton = (ImageButton) findViewById(R.id.searchImageButton);
+        qrButton = findViewById(R.id.qrbutton);
 
         imageView = (ImageView) findViewById(R.id.imageView);
         imgGreen = (ImageView) findViewById(R.id.imageViewGreen);
@@ -205,6 +214,11 @@ public class KunjunganActivity extends AppCompatActivity {
                 intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, 7);
             }
+        });
+
+        qrButton.setOnClickListener(view -> {
+            //initiate scan with our custom scan activity
+            new IntentIntegrator(KunjunganActivity.this).setCaptureActivity(ScannerActivity.class).initiateScan();
         });
 
         // initialize the necessary libraries
@@ -239,6 +253,34 @@ public class KunjunganActivity extends AppCompatActivity {
                 }).check();
 
     }
+
+    /*public void showResultDialogue(final String result) {
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(this);
+        }
+        builder.setTitle("Scan Result")
+                .setMessage("Scanned result is " + result)
+                .setPositiveButton("Copy result", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("Scan Result", result);
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(KunjunganActivity.this, "Result copied to clipboard", Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }*/
 
     @Override
     public void onStart() {
@@ -325,11 +367,24 @@ public class KunjunganActivity extends AppCompatActivity {
      */
     private void updateLocationUI() {
         if (mCurrentLocation != null) {
-            ((EditText)findViewById(R.id.etLocationLat)).setText(Double.toString(mCurrentLocation.getLatitude()));
-            ((EditText)findViewById(R.id.etLocationLong)).setText(Double.toString(mCurrentLocation.getLongitude()));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                //for counter fakeGPS using mock provider
+                if(mCurrentLocation.isFromMockProvider()){
+                    ((EditText) findViewById(R.id.etLocationLat)).setText(Double.toString(mCurrentLocation.getLatitude()));
+                    ((EditText) findViewById(R.id.etLocationLong)).setText(Double.toString(mCurrentLocation.getLongitude()));
+                    fake_status = "1";
 
-            imgGreen.setVisibility(View.VISIBLE);
-            imgRed.setVisibility(View.GONE);
+                    imgRed.setVisibility(View.GONE);
+                    imgGreen.setVisibility(View.VISIBLE);
+                }else {
+                    ((EditText) findViewById(R.id.etLocationLat)).setText(Double.toString(mCurrentLocation.getLatitude()));
+                    ((EditText) findViewById(R.id.etLocationLong)).setText(Double.toString(mCurrentLocation.getLongitude()));
+                    fake_status ="0";
+
+                    imgGreen.setVisibility(View.VISIBLE);
+                    imgRed.setVisibility(View.GONE);
+                }
+            }
         }
         else{
             ((EditText)findViewById(R.id.etLocationLat)).setText("");
@@ -338,7 +393,6 @@ public class KunjunganActivity extends AppCompatActivity {
             imgRed.setVisibility(View.VISIBLE);
             imgGreen.setVisibility(View.GONE);
         }
-
         //toggleButtons();
     }
 
@@ -420,12 +474,16 @@ public class KunjunganActivity extends AppCompatActivity {
                 String message = response.body().getMessage();
                 progress.dismiss();
                 if (value.equals("1")) {
-                    UploadImageToServer();
+                    if(message =="timeout"){
+                        call.cancel();
+                    }else {
+                        UploadImageToServer();
 
-                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                    Intent inLogin2 = new Intent(KunjunganActivity.this, MainActivity.class);
-                    startActivity(inLogin2);
-                    finish();
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        Intent inLogin2 = new Intent(KunjunganActivity.this, MainActivity.class);
+                        startActivity(inLogin2);
+                        finish();
+                    }
                 } else {
                     Toast.makeText(KunjunganActivity.this, message, Toast.LENGTH_SHORT).show();
                 }
@@ -435,7 +493,14 @@ public class KunjunganActivity extends AppCompatActivity {
             public void onFailure(Call<Value> call, Throwable t) {
                 t.printStackTrace();
                 progress.dismiss();
-                Toast.makeText(KunjunganActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                call.cancel();
+                if (call.isCanceled()) {
+                    Log.e("TAG", "request was cancelled");
+                }
+                else {
+                    Log.e("TAG", "other larger issue, i.e. no network connection?");
+                }
+                Toast.makeText(KunjunganActivity.this, "Data gagal diinput, silahkan dicoba kembali", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -452,28 +517,49 @@ public class KunjunganActivity extends AppCompatActivity {
     //
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 7 && resultCode == RESULT_OK) {
+        if (requestCode == 7 && resultCode == RESULT_OK && et_namaoutlet != null) {
             FixBitmap = (Bitmap) data.getExtras().get("data");
             //Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             imageView.setImageBitmap(FixBitmap);
             bt_kunjungan.setVisibility(View.VISIBLE);
         }
 
-        switch (requestCode) {
-            // Check for the integer request code originally supplied to startResolutionForResult().
-            case REQUEST_CHECK_SETTINGS:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        Log.e(TAG, "User agreed to make required location settings changes.");
-                        // Nothing to do. startLocationupdates() gets called in onResume again.
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        Log.e(TAG, "User chose not to make required location settings changes.");
-                        mRequestingLocationUpdates = false;
-                        break;
+        if(requestCode == 7){
+            switch (requestCode) {
+                // Check for the integer request code originally supplied to startResolutionForResult().
+                case REQUEST_CHECK_SETTINGS:
+                    switch (resultCode) {
+                        case Activity.RESULT_OK:
+                            Log.e(TAG, "User agreed to make required location settings changes.");
+                            // Nothing to do. startLocationupdates() gets called in onResume again.
+                            break;
+                        case Activity.RESULT_CANCELED:
+                            Log.e(TAG, "User chose not to make required location settings changes.");
+                            mRequestingLocationUpdates = false;
+                            break;
+                    }
+                    break;
+            }
+        }else{
+            //We will get scan results here
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            //check for null
+            if (result != null) {
+                if (result.getContents() == null) {
+                    Toast.makeText(this, "Scan Cancelled", Toast.LENGTH_LONG).show();
+                } else {
+                    //Pass data to namaoutlet then get it to database by API
+                    et_namaoutlet.setText(result.getContents().trim());
                 }
-                break;
+            } else {
+                // This is important, otherwise the result will not be passed to the fragment
+                super.onActivityResult(requestCode, resultCode, data);
+            }
         }
+
+
+
+
     }
 
     public void UploadImageToServer(){

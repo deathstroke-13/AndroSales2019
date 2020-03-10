@@ -27,7 +27,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".TestActivity"></activity>
+        <activity android:name=".KunjunganQRActivity"></activity>
+        <activity android:name=".SlipgajiActivity" />
+        <activity android:name=".ScannerActivity" />
+        <activity android:name=".TestActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"
