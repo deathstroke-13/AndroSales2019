@@ -51,7 +51,7 @@ public class SettingActivity extends AppCompatActivity {
         String dataAddr 	= settingData.get(SessionManager.KEY_IP);
         String dataServer 	= settingData.get(SessionManager.KEY_SERVER);
         if(dataAddr != null){
-            et_ip.setText(String.valueOf(dataAddr));
+            et_ip.setText(dataAddr);
             et_folder.setText(String.valueOf(dataServer));
 
             String ipAddress = et_ip.getText().toString();
@@ -62,8 +62,8 @@ public class SettingActivity extends AppCompatActivity {
             //10.0.2.2
             String dataIP	  = "45.115.137.43";
             String dataServ   = "androsales_service";
-            et_ip.setText(String.valueOf(dataIP));
-            et_folder.setText(String.valueOf(dataServ));
+            et_ip.setText(dataIP);
+            et_folder.setText(dataServ);
             session.createSettingSession(dataIP,dataServ);
 
         }

@@ -33,11 +33,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().setElevation(0);
 
-        btPenjualan = (Button) findViewById(R.id.bt_penjualan);
-        btAbsen = (Button) findViewById(R.id.bt_absen);
-        btKunjungan = (Button) findViewById(R.id.bt_kunjungan);
-        btbiaya_bbm = (Button) findViewById(R.id.bt_biaya_bbm);
-        bt_laporan = (Button) findViewById(R.id.bt_laporan);
+        btPenjualan = findViewById(R.id.bt_penjualan);
+        btAbsen = findViewById(R.id.bt_absen);
+        btKunjungan = findViewById(R.id.bt_kunjungan);
+        btbiaya_bbm = findViewById(R.id.bt_biaya_bbm);
+        bt_laporan = findViewById(R.id.bt_laporan);
         bt_slipgaji = findViewById(R.id.bt_slipGaji);
 
         session = new SessionManager(getApplicationContext());

@@ -51,7 +51,7 @@ public class LaporanDetailActivity extends AppCompatActivity {
 
         final ProgressDialog pd = ProgressDialog.show(LaporanDetailActivity.this, "", "Loading...", true);
 
-        WebView webView = (WebView) findViewById(R.id.webview);
+        WebView webView = findViewById(R.id.webview);
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);

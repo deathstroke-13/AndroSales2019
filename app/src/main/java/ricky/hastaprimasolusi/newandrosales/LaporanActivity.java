@@ -230,7 +230,7 @@ public class LaporanActivity extends AppCompatActivity {
 
         final ProgressBar myProgressBar= findViewById(R.id.myProgressBar);
 
-        bt_cari_lap = (Button) findViewById(R.id.button_cari_lap);
+        bt_cari_lap = findViewById(R.id.button_cari_lap);
 
 
         txtDateAwal.setOnClickListener(new View.OnClickListener() {

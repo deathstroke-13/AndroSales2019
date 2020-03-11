@@ -77,7 +77,7 @@ public class ProdukActivity extends AppCompatActivity  implements SearchView.OnQ
         setContentView(R.layout.activity_produk);
         getSupportActionBar().setElevation(0);
 
-        spinnerFood = (Spinner) findViewById(R.id.spinFood);
+        spinnerFood = findViewById(R.id.spinFood);
 
 
         if (savedInstanceState == null) {
@@ -90,7 +90,7 @@ public class ProdukActivity extends AppCompatActivity  implements SearchView.OnQ
         } else {
             newString= (String) savedInstanceState.getSerializable("NoTransaksi");
         }
-        etNoTransaksi = (EditText) findViewById(R.id.et_notransaksi);
+        etNoTransaksi = findViewById(R.id.et_notransaksi);
         etNoTransaksi.setText(newString);
 
         session = new SessionManager(getApplicationContext());
@@ -113,7 +113,7 @@ public class ProdukActivity extends AppCompatActivity  implements SearchView.OnQ
 
         //float button
         // pada method onCreate, panggil fab dari xml
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

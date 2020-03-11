@@ -181,7 +181,7 @@
                     android:paddingBottom="0dp"
                     android:text="@string/txt_menu_slipgaji"
                     android:textColor="@android:color/black"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout

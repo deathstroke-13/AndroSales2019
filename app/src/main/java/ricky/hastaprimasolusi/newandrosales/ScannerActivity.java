@@ -34,7 +34,7 @@ public class ScannerActivity extends AppCompatActivity implements
         barcodeScannerView.setTorchListener(this);
 
         //switch flashlight button
-        switchFlashlightButton = (Button) findViewById(R.id.switch_flashlight);
+        switchFlashlightButton = findViewById(R.id.switch_flashlight);
 
         // if the device does not have flashlight in its camera,
         // then remove the switch flashlight button...

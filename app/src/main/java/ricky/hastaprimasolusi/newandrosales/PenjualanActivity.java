@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -64,6 +65,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -392,6 +394,7 @@ public class PenjualanActivity extends AppCompatActivity {
                 super.onPostExecute(string1);
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             protected String doInBackground(Void... params) {
 
@@ -413,7 +416,8 @@ public class PenjualanActivity extends AppCompatActivity {
 
     public class ImageProcessClass{
 
-        public String ImageHttpRequest(String requestURL,HashMap<String, String> PData) {
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        public String ImageHttpRequest(String requestURL, HashMap<String, String> PData) {
 
             StringBuilder stringBuilder = new StringBuilder();
 
@@ -427,7 +431,7 @@ public class PenjualanActivity extends AppCompatActivity {
                 httpURLConnection.setDoOutput(true);
                 outputStream = httpURLConnection.getOutputStream();
                 bufferedWriter = new BufferedWriter(
-                        new OutputStreamWriter(outputStream, "UTF-8"));
+                        new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
                 bufferedWriter.write(bufferedWriterDataFN(PData));
                 bufferedWriter.flush();
                 bufferedWriter.close();

@@ -72,8 +72,8 @@ public class BiayaBBMActivity extends AppCompatActivity {
 
         URL = "http://" + IPADDR + "/" + NMSERVER + "/";
 
-        textViewBiaya = (TextView) findViewById(R.id.textViewBiaya);
-        textViewKm = (TextView) findViewById(R.id.textViewKm);
+        textViewBiaya = findViewById(R.id.textViewBiaya);
+        textViewKm = findViewById(R.id.textViewKm);
 
         progress = ProgressDialog.show(BiayaBBMActivity.this,"","Please Wait",false,false);
 

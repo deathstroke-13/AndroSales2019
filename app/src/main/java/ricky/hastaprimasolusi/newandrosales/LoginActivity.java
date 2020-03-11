@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 
@@ -75,25 +77,25 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         String dataServer 	= identifyServer.get(SessionManager.KEY_SERVER);
 
         if(dataAddr != null){
-            et_ip.setText(String.valueOf(dataAddr));
+            et_ip.setText(dataAddr);
             et_folder.setText(String.valueOf(dataServer));
 
             String ipAddress = et_ip.getText().toString();
             String nmServer  = et_folder.getText().toString();
             session.createSettingSession(ipAddress,nmServer);
 
-            IPADDR 		= String.valueOf(ipAddress);
-            NMSERVER 	= String.valueOf(nmServer);
+            IPADDR 		= ipAddress;
+            NMSERVER 	= nmServer;
         }else{
             String dataIP	  = "45.115.137.43";
             String dataServ   = "androsales_service";
-            et_ip.setText(String.valueOf(dataIP));
-            et_folder.setText(String.valueOf(dataServ));
+            et_ip.setText(dataIP);
+            et_folder.setText(dataServ);
 
             session.createSettingSession(dataIP,dataServ);
 
-            IPADDR 		= String.valueOf(dataIP);
-            NMSERVER 	= String.valueOf(dataServ);
+            IPADDR 		= dataIP;
+            NMSERVER 	= dataServ;
 
         }
 
@@ -225,6 +227,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
 
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         protected String doInBackground(String... params) {
             try {
@@ -256,7 +259,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
                 // Open connection for sending data
                 OutputStream os = conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
-                        new OutputStreamWriter(os, "UTF-8"));
+                        new OutputStreamWriter(os, StandardCharsets.UTF_8));
                 writer.write(query);
                 writer.flush();
                 writer.close();
@@ -316,7 +319,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
                 /* Here launching another activity when login successful. If you persist login state
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
-                session.createLoginSession(String.valueOf(imeiid));
+                session.createLoginSession(imeiid);
 
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);

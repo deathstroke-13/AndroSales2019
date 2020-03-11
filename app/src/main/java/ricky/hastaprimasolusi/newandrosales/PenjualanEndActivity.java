@@ -60,7 +60,7 @@ public class PenjualanEndActivity extends AppCompatActivity {
 
         URL = "http://" + IPADDR + "/" + NMSERVER + "/";
 
-        bt_penjualan  = (Button) findViewById(R.id.button_selesai_penjualan);
+        bt_penjualan  = findViewById(R.id.button_selesai_penjualan);
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -74,7 +74,7 @@ public class PenjualanEndActivity extends AppCompatActivity {
         }
 
 
-        listView = (ListView) findViewById(R.id.listView);
+        listView = findViewById(R.id.listView);
 
         progress = ProgressDialog.show(PenjualanEndActivity.this,"","Please Wait",false,false);
 

@@ -73,6 +73,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.sql.SQLTransactionRollbackException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -195,25 +197,25 @@ public class AbsensiActivity extends AppCompatActivity {
 
         URL = "http://" + IPADDR + "/" + NMSERVER + "/";
 
-        imgButton = (ImageButton) findViewById(R.id.searchImageButton);
-        imageView = (ImageView) findViewById(R.id.imageView);
-        bt_absen  = (Button) findViewById(R.id.button_simpan_absen);
+        imgButton =  findViewById(R.id.searchImageButton);
+        imageView =  findViewById(R.id.imageView);
+        bt_absen  =  findViewById(R.id.button_simpan_absen);
         byteArrayOutputStream = new ByteArrayOutputStream();
 
-        imgGreen = (ImageView) findViewById(R.id.imageViewGreen);
-        imgRed  = (ImageView) findViewById(R.id.imageViewRed);
+        imgGreen =  findViewById(R.id.imageViewGreen);
+        imgRed  =  findViewById(R.id.imageViewRed);
 
 
-        radioGroupAbsensi = (RadioGroup) findViewById(R.id.et_absensi);
+        radioGroupAbsensi = findViewById(R.id.et_absensi);
 
-        et_odometer     = (EditText) findViewById(R.id.et_odometer);
-        et_namaoutlet   = (EditText) findViewById(R.id.et_namaoutlet);
-        et_ket          = (EditText) findViewById(R.id.et_ket);
-        etLocationLat   = (EditText) findViewById(R.id.etLocationLat);
-        etLocationLong  = (EditText) findViewById(R.id.etLocationLong);
+        et_odometer     =  findViewById(R.id.et_odometer);
+        et_namaoutlet   =  findViewById(R.id.et_namaoutlet);
+        et_ket          =  findViewById(R.id.et_ket);
+        etLocationLat   =  findViewById(R.id.etLocationLat);
+        etLocationLong  =  findViewById(R.id.etLocationLong);
 
-        imgGreen = (ImageView) findViewById(R.id.imageViewGreen);
-        imgRed  = (ImageView) findViewById(R.id.imageViewRed);
+        imgGreen = findViewById(R.id.imageViewGreen);
+        imgRed  = findViewById(R.id.imageViewRed);
 
 
         //createLocationRequest();
@@ -305,7 +307,7 @@ public class AbsensiActivity extends AppCompatActivity {
         int selectedId = radioGroupAbsensi.getCheckedRadioButtonId();
 
         // find the radiobutton by returned id
-        radioButtonAbsensi = (RadioButton) findViewById(selectedId);
+        radioButtonAbsensi = findViewById(selectedId);
 
         odometer        = et_odometer.getText().toString();
         namaoutlet      = et_namaoutlet.getText().toString();
@@ -420,6 +422,7 @@ public class AbsensiActivity extends AppCompatActivity {
                 //Toast.makeText(AbsensiActivity.this,string1,Toast.LENGTH_LONG).show();
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             protected String doInBackground(Void... params) {
 
@@ -441,7 +444,8 @@ public class AbsensiActivity extends AppCompatActivity {
 
     public class ImageProcessClass{
 
-        public String ImageHttpRequest(String requestURL,HashMap<String, String> PData) {
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        public String ImageHttpRequest(String requestURL, HashMap<String, String> PData) {
 
             StringBuilder stringBuilder = new StringBuilder();
 
@@ -455,7 +459,7 @@ public class AbsensiActivity extends AppCompatActivity {
                 httpURLConnection.setDoOutput(true);
                 outputStream = httpURLConnection.getOutputStream();
                 bufferedWriter = new BufferedWriter(
-                        new OutputStreamWriter(outputStream, "UTF-8"));
+                        new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
                 bufferedWriter.write(bufferedWriterDataFN(PData));
                 bufferedWriter.flush();
                 bufferedWriter.close();

@@ -122,7 +122,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             //pass the 'context' here
 
-            session = new SessionManager(((Activity) context));
+            session = new SessionManager(context);
 
             HashMap<String, String> identifyServer = session.getSettingDetails();
             String IPADDR = String.valueOf(identifyServer.get(SessionManager.KEY_IP));
@@ -139,10 +139,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             final Dialog dialog = new Dialog(context);
             dialog.setContentView(R.layout.form_input_qty_prd);
 
-            txt_id  = (EditText) dialog.findViewById(R.id.txt_id);
-            txt_qty = (EditText) dialog.findViewById(R.id.txt_qty);
-            txt_no_transaksi = (EditText) dialog.findViewById(R.id.txt_no_transaksi);
-            bt_save     = (Button) dialog.findViewById(R.id.btn_save);
+            txt_id  = dialog.findViewById(R.id.txt_id);
+            txt_qty = dialog.findViewById(R.id.txt_qty);
+            txt_no_transaksi = dialog.findViewById(R.id.txt_no_transaksi);
+            bt_save     = dialog.findViewById(R.id.btn_save);
             nama_prd    = dialog.findViewById(R.id.label_nama_produk);
 
             txt_id.setText(id_produk);
@@ -176,7 +176,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     etNoTransaksi   = txt_no_transaksi.getText().toString();
 
 
-                    progress = new ProgressDialog(((Activity) context));
+                    progress = new ProgressDialog(context);
                     progress.setCancelable(false);
                     progress.setMessage("Loading ...");
                     progress.show();
@@ -201,12 +201,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             if (value.equals("1")) {
                                 dialog.cancel();
                                 progress.dismiss();
-                                Toast.makeText(((Activity) context), message, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
                             } else {
                                 dialog.cancel();
                                 progress.dismiss();
-                                Toast.makeText(((Activity) context), message, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -215,7 +215,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             t.printStackTrace();
                             progress.dismiss();
                             dialog.cancel();
-                            Toast.makeText(((Activity) context), t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
 
