@@ -191,6 +191,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
             // action with ID action_settings was selected
             case R.id.action_setting_ip:
                 openSetting();
+                test1 ="1";
                 break;
             default:
                 break;
