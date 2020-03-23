@@ -33,7 +33,7 @@ public class SettingActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.text_footer);
 
-        String version = "1.51";
+        String version = "1.52";
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = packageInfo.versionName;
@@ -60,7 +60,7 @@ public class SettingActivity extends AppCompatActivity {
 
         }else{
             //10.0.2.2
-            String dataIP	  = "45.115.137.43";
+            String dataIP	  = "36.94.17.163";
             String dataServ   = "androsales_service";
             et_ip.setText(dataIP);
             et_folder.setText(dataServ);

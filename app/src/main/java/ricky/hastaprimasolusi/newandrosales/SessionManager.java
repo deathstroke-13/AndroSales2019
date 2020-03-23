@@ -9,7 +9,8 @@ import java.util.HashMap;
 
 @SuppressLint("CommitPrefEdits")
 public class SessionManager {
-    // Shared Preferences
+
+        // Shared Preferences
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     Context _context;
@@ -27,6 +28,7 @@ public class SessionManager {
     public static final String KEY_IMEI 	= "imeiID";
     public static final String KEY_IP 		= "ipaddress";
     public static final String KEY_SERVER 	= "server";
+    public static final String KEY_NIK      = "NIK";
     // Constructor
     public SessionManager(Context context){
         this._context = context;
@@ -37,10 +39,11 @@ public class SessionManager {
     /**
      * Create login session
      * */
-    public void createLoginSession(String imeiID){
+    public void createLoginSession(String imeiID, String NIK){
         // Storing
         editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_IMEI, imeiID);
+        editor.putString(KEY_NIK, NIK);
         editor.commit();
     }
     public void createSettingSession(String ipaddress, String server){
@@ -111,6 +114,7 @@ public class SessionManager {
         // user email id
         user.put(KEY_PASS, pref.getString(KEY_PASS, null));
         user.put(KEY_IMEI, pref.getString(KEY_IMEI, null));
+        user.put(KEY_NIK, pref.getString(KEY_NIK,null));
         // return user
         return user;
     }

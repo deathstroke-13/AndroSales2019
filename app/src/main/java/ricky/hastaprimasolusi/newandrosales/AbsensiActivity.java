@@ -86,6 +86,9 @@ import javax.net.ssl.HttpsURLConnection;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -317,8 +320,23 @@ public class AbsensiActivity extends AppCompatActivity {
         nilaiAbsen      = radioButtonAbsensi.getText().toString();
 
 
+        // Define the interceptor, add authentication headers
+        Interceptor interceptor = new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Interceptor.Chain chain) throws IOException {
+                Request newRequest = chain.request().newBuilder().addHeader("User-Agent", "Retrofit-Sample-App").build();
+                return chain.proceed(newRequest);
+            }
+        };
+
+        // Add the interceptor to OkHttpClient
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.interceptors().add(interceptor);
+        OkHttpClient client = builder.build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RegisterAPI api = retrofit.create(RegisterAPI.class);
@@ -330,8 +348,9 @@ public class AbsensiActivity extends AppCompatActivity {
                 String message = response.body().getMessage();
                 progress.dismiss();
                 if (value.equals("1")) {
-                    if(message =="timeout"){
+                    if(message.equals("timeout")){
                         call.cancel();
+                        client.dispatcher().cancelAll();
                     }else {
                         UploadImageToServer();
 
@@ -350,6 +369,7 @@ public class AbsensiActivity extends AppCompatActivity {
                 t.printStackTrace();
                 progress.dismiss();
                 call.cancel();
+                client.dispatcher().cancelAll();
                 if (call.isCanceled()) {
                     Log.e("TAG", "request was cancelled");
                 }
@@ -504,8 +524,8 @@ public class AbsensiActivity extends AppCompatActivity {
         session.logoutUser();
         finish();
     }
-
     @Override
+
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;

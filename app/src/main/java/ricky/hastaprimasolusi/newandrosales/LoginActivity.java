@@ -10,12 +10,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,12 +33,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -49,7 +53,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
     public static final int READ_TIMEOUT = 15000;
 
     private TextView textView;
-    private EditText etIMEI;
+    private EditText etIMEI,etNIK;
 
     private EditText et_ip,et_folder;
 
@@ -65,6 +69,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
 
         etIMEI = findViewById(R.id.field_IMEI);
         etIMEI.setEnabled(true);
+        etNIK = findViewById(R.id.field_NIK);
 
         et_ip 	            = findViewById(R.id.et_ip);
         et_folder 	    	= findViewById(R.id.et_folder);
@@ -76,9 +81,11 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         String dataAddr 	= identifyServer.get(SessionManager.KEY_IP);
         String dataServer 	= identifyServer.get(SessionManager.KEY_SERVER);
 
+
         if(dataAddr != null){
             et_ip.setText(dataAddr);
             et_folder.setText(String.valueOf(dataServer));
+
 
             String ipAddress = et_ip.getText().toString();
             String nmServer  = et_folder.getText().toString();
@@ -87,7 +94,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
             IPADDR 		= ipAddress;
             NMSERVER 	= nmServer;
         }else{
-            String dataIP	  = "45.115.137.43";
+            String dataIP	  = "36.94.17.163";
             String dataServ   = "androsales_service";
             et_ip.setText(dataIP);
             et_folder.setText(dataServ);
@@ -101,7 +108,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
 
         //footer text
         textView = findViewById(R.id.text_footer);
-        String version = "1.51";
+        String version = "1.52";
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = packageInfo.versionName;
@@ -137,8 +144,21 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         }
         final String imei = manager.getDeviceId();
 
-        etIMEI.setText(String.valueOf(imei));
-        //etIMEI.setText("865300048276503");
+        //etIMEI.setText(String.valueOf(imei));
+        etIMEI.setText("865300048276503");
+        /*String androidId = Settings.Secure.getString(LoginActivity.this.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        UUID androidId_UUID = null;
+        try {
+            androidId_UUID = UUID
+                    .nameUUIDFromBytes(androidId.getBytes("utf8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String unique_id = androidId_UUID.toString();
+        etIMEI.setText(unique_id);*/
+
 
 
     }
@@ -163,9 +183,21 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         }
         final String imei = manager.getDeviceId();
 
-        etIMEI.setText(String.valueOf(imei));
+        //etIMEI.setText(String.valueOf(imei));
         //"865300048276503"
-        //etIMEI.setText("865300048276503");
+        etIMEI.setText("865300048276503");
+        /*String androidId = Settings.Secure.getString(LoginActivity.this.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        UUID androidId_UUID = null;
+        try {
+            androidId_UUID = UUID
+                    .nameUUIDFromBytes(androidId.getBytes("utf8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String unique_id = androidId_UUID.toString();
+        etIMEI.setText(unique_id);*/
     }
 
     @Override
@@ -191,7 +223,6 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
             // action with ID action_settings was selected
             case R.id.action_setting_ip:
                 openSetting();
-                test1 ="1";
                 break;
             default:
                 break;
@@ -209,7 +240,8 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
 
     public void cekImei(View view) {
         String imei 	    = etIMEI.getText().toString().trim();
-        new AsyncLoginIMEI().execute(imei);
+        String nik          = etNIK.getText().toString().trim();
+        new AsyncLoginIMEI().execute(imei,nik);
     }
 
     private class AsyncLoginIMEI extends AsyncTask<String, String, String> {
@@ -253,8 +285,10 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
                 conn.setDoOutput(true);
 
                 // Append parameters to URL
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("imei", params[0]);
+                Uri.Builder builder;
+                builder = new Uri.Builder();
+                builder.appendQueryParameter("imei", params[0]);
+                builder.appendQueryParameter("nik", params[1]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
@@ -310,6 +344,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         protected void onPostExecute(String result) {
 
             String imeiid 	    = etIMEI.getText().toString().trim();
+            String nikID        = etNIK.getText().toString().trim();
 
             //this method will be running on UI thread
 
@@ -320,7 +355,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
                 /* Here launching another activity when login successful. If you persist login state
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
-                session.createLoginSession(imeiid);
+                session.createLoginSession(imeiid,nikID);
 
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);

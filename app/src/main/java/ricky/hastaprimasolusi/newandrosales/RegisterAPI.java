@@ -83,7 +83,7 @@ public interface RegisterAPI {
     @POST("API/slipgaji.php")
     Call<Value> slipgaji(@Field("month") int month,
                          @Field("selectedYear") String selectedYear,
-                         @Field("kodeImei") String kodeImei);
+                         @Field("NIK") String NIK);
 /*
     @GET("view.php")
     Call<Value> view();

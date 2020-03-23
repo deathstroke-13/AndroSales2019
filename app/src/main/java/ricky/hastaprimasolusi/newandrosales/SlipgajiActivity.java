@@ -9,19 +9,29 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 import butterknife.ButterKnife;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,7 +48,10 @@ public class SlipgajiActivity extends AppCompatActivity implements AdapterView.O
     String kodeImei,IPADDR,NMSERVER;
     public String URL;
 
-    String fuck;
+
+    private List<Result> results = new ArrayList<>();
+    String NIK;
+    TextView txt1, txt2, txt3;
 
     private ProgressDialog progress;
 
@@ -57,15 +70,22 @@ public class SlipgajiActivity extends AppCompatActivity implements AdapterView.O
 
         HashMap<String, String> devId = session.getUserDetails();
         kodeImei = devId.get(SessionManager.KEY_IMEI);
+        NIK = devId.get(SessionManager.KEY_NIK);
 
         URL = "http://"+IPADDR+"/"+NMSERVER+"/";
+
+        txt1 = findViewById(R.id.txt1);
+        txt2 = findViewById(R.id.txt2);
+        txt3 = findViewById(R.id.txt3);
+
+
 
 
         ActivityCompat.requestPermissions(SlipgajiActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
         spin1 = findViewById(R.id.spinner);
         spin2 = findViewById(R.id.spinner2);
         String[] bulan = {"Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"};
-        String[] tahun = {"2020","2021","2022","2023","2024","2025","2026","2027","2028","2029","2030"};
+        String[] tahun = {"2019","2020","2021","2022","2023","2024","2025","2026","2027","2028","2029","2030"};
 
         ArrayAdapter<CharSequence> adapterBulan = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, bulan);
         adapterBulan.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -74,10 +94,6 @@ public class SlipgajiActivity extends AppCompatActivity implements AdapterView.O
         ArrayAdapter<CharSequence> adapterTahun = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item,tahun);
         adapterTahun.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin2.setAdapter(adapterTahun);
-
-        selectedMonth = spin1.getSelectedItem().toString();
-        selectedYear = spin2.getSelectedItem().toString();
-
 
     }
 
@@ -92,57 +108,87 @@ public class SlipgajiActivity extends AppCompatActivity implements AdapterView.O
     }
 
     public void createPDF(View view){
-        if(selectedMonth == "Januari"){
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.connectTimeout(5, TimeUnit.SECONDS);
+        builder.readTimeout(5, TimeUnit.SECONDS);
+        builder.writeTimeout(5, TimeUnit.SECONDS);
+        OkHttpClient client = builder.build();
+
+        selectedMonth = spin1.getSelectedItem().toString();
+        selectedYear = spin2.getSelectedItem().toString();
+        if(selectedMonth.equals("Januari")){
             month = 1;
-        }else if(selectedMonth =="Februari"){
+        }else if(selectedMonth.equals("Februari")){
             month = 2;
-        }else if(selectedMonth == "Maret"){
+        }else if(selectedMonth.equals("Maret")){
             month = 3;
-        }else if(selectedMonth == "April"){
+        }else if(selectedMonth.equals("April")){
             month = 4;
-        }else if(selectedMonth == "Mei"){
+        }else if(selectedMonth.equals("Mei")){
             month = 5;
-        }else if(selectedMonth == "Juni"){
+        }else if(selectedMonth.equals("Juni")){
             month = 6;
-        }else if(selectedMonth == "Juli"){
+        }else if(selectedMonth.equals("Juli")){
             month = 7;
-        }else if(selectedMonth == "Agustus"){
+        }else if(selectedMonth.equals("Agustus")){
             month = 8;
-        }else if(selectedMonth == "September"){
+        }else if(selectedMonth.equals("September")){
             month = 9;
-        }else if(selectedMonth == "Oktober"){
+        }else if(selectedMonth.equals("Oktober")){
             month = 10;
-        }else if(selectedMonth == "November"){
+        }else if(selectedMonth.equals("November")){
             month = 11;
         }else{
             month = 12;
         }
 
+        txt1.setText(NIK);
+        txt2.setText(String.valueOf(month));
+        txt3.setText(selectedYear);
         progress = ProgressDialog.show(SlipgajiActivity.this,"Proses Slip","Please Wait",false,false);
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(URL)
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(URL).client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RegisterAPI api = retrofit.create(RegisterAPI.class);
-        Call<Value> call = api.slipgaji(month, selectedYear, kodeImei);
+        Call<Value> call = api.slipgaji(month, selectedYear, NIK);
         call.enqueue(new Callback<Value>() {
             @Override
             public void onResponse(Call<Value> call, Response<Value> response) {
                 String value = response.body().getValue();
-                progress.dismiss();
+                String message = response.body().getMessage();
+                if (value.equals("1")) {
+                    results = response.body().getResult();
+                    Toast.makeText(SlipgajiActivity.this, value, Toast.LENGTH_LONG).show();
+                    addtoPdf();
+                    progress.dismiss();
+
+                } else {
+                    Toast.makeText(SlipgajiActivity.this, message, Toast.LENGTH_LONG).show();
+                }
+
             }
 
             @Override
             public void onFailure(Call<Value> call, Throwable t) {
-                progress.dismiss();
+                t.printStackTrace();
+                t.getMessage();
+                //addtoPdf();
                 call.cancel();
+                progress.dismiss();
             }
         });
 
+
+
+    }
+
+    private void addtoPdf() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
             PdfDocument pdfDoc = new PdfDocument();
             PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(800,400,1).create();
             PdfDocument.Page myPage = pdfDoc.startPage(myPageInfo);
+
 
             Paint myPaint = new Paint();
             int x = 10, y = 25;
@@ -190,7 +236,7 @@ public class SlipgajiActivity extends AppCompatActivity implements AdapterView.O
             myPage.getCanvas().drawText("Gaji Diterima",x+550,y+280,myPaint);
 
             //Isi Komponen
-            myPage.getCanvas().drawText(": 5481151545",x+110,y+40,myPaint);
+            myPage.getCanvas().drawText(": ",x+110,y+40,myPaint);
             myPage.getCanvas().drawText(": Testing Nama",x+110,y+60,myPaint);
             myPage.getCanvas().drawText(": Programmer",x+110,y+80,myPaint);
 
@@ -254,5 +300,31 @@ public class SlipgajiActivity extends AppCompatActivity implements AdapterView.O
             Toast.makeText(this, "Cant print pdf because lack of API", Toast.LENGTH_LONG).show();
         }
 
+
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_about) {
+            Toast.makeText(getApplicationContext(), "PT. Hasta Prima Solusi", Toast.LENGTH_SHORT).show();
+            return true;
+
+            //Intent i = new Intent(MainActivity.this, AboutActivity.class);
+            //startActivity(i);
+        }
+        else if (id == R.id.action_logout){
+            session.logoutUser();
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
