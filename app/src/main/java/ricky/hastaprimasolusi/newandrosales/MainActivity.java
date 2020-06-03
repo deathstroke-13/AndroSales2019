@@ -155,7 +155,10 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_about) {
+        if(id == R.id.action_changePassword){
+
+        }
+        else if (id == R.id.action_about) {
             Toast.makeText(getApplicationContext(), "PT. Hasta Prima Solusi", Toast.LENGTH_SHORT).show();
             return true;
 
@@ -166,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
             session.logoutUser();
             finish();
         }
+
+
 
         return super.onOptionsItemSelected(item);
     }

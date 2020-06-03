@@ -40,6 +40,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -52,8 +53,8 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
 
-    private TextView textView;
-    private EditText etIMEI,etNIK;
+    private TextView textView, textUUID;
+    private EditText etIMEI,etNIK, etPassword;
 
     private EditText et_ip,et_folder;
 
@@ -70,10 +71,13 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         etIMEI = findViewById(R.id.field_IMEI);
         etIMEI.setEnabled(true);
         etNIK = findViewById(R.id.field_NIK);
+        etPassword = findViewById(R.id.field_Password);
+        textUUID = findViewById(R.id.txt_uuid);
 
         et_ip 	            = findViewById(R.id.et_ip);
         et_folder 	    	= findViewById(R.id.et_folder);
 
+        uuid();
         session = new SessionManager(getApplicationContext());
 
         HashMap<String, String> identifyServer = session.getSettingDetails();
@@ -96,6 +100,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         }else{
             String dataIP	  = "36.94.17.163";
             String dataServ   = "androsales_service";
+            String uuid = textUUID.getText().toString();
             et_ip.setText(dataIP);
             et_folder.setText(dataServ);
 
@@ -185,7 +190,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
 
         //etIMEI.setText(String.valueOf(imei));
         //"865300048276503"
-        etIMEI.setText("865300048276503");
+        //etIMEI.setText("865300048276503");
         /*String androidId = Settings.Secure.getString(LoginActivity.this.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
         UUID androidId_UUID = null;
@@ -239,9 +244,11 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
     //login imei
 
     public void cekImei(View view) {
-        String imei 	    = etIMEI.getText().toString().trim();
+
         String nik          = etNIK.getText().toString().trim();
-        new AsyncLoginIMEI().execute(imei,nik);
+        String uuid         = textUUID.getText().toString();
+        String password     = etPassword.getText().toString();
+        new AsyncLoginIMEI().execute(nik,uuid,password);
     }
 
     private class AsyncLoginIMEI extends AsyncTask<String, String, String> {
@@ -266,7 +273,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://"+IPADDR+"/"+NMSERVER+"/loginIMEI.inc.php");
+                url = new URL("http://"+IPADDR+"/"+NMSERVER+"/loginNIKUUID.inc.php");
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
@@ -287,8 +294,10 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
                 // Append parameters to URL
                 Uri.Builder builder;
                 builder = new Uri.Builder();
-                builder.appendQueryParameter("imei", params[0]);
-                builder.appendQueryParameter("nik", params[1]);
+                //builder.appendQueryParameter("imei", params[0]);
+                builder.appendQueryParameter("nik", params[0]);
+                builder.appendQueryParameter("uuid", params[1]);
+                builder.appendQueryParameter("password", params[2]);
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
@@ -343,33 +352,48 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         @Override
         protected void onPostExecute(String result) {
 
-            String imeiid 	    = etIMEI.getText().toString().trim();
+            //String imeiid 	    = etIMEI.getText().toString().trim();
             String nikID        = etNIK.getText().toString().trim();
+
+
+            Log.e("Character :",result);
+            String[] separated = result.split("\\.");
+            String result1 = separated[0].trim();
+            String imeigiven = separated[1].trim();
+
+            Log.e("Character 1:",result1);
+            Log.e("Character 2:",imeigiven);
 
             //this method will be running on UI thread
 
             pdLoading.dismiss();
 
-            if(result.equalsIgnoreCase("true"))
+            if(result1.equalsIgnoreCase("true"))
             {
                 /* Here launching another activity when login successful. If you persist login state
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
-                session.createLoginSession(imeiid,nikID);
+                session.createLoginSession(imeigiven,nikID);
 
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 LoginActivity.this.finish();
 
-            }else if (result.equalsIgnoreCase("false")){
+            }else if (result1.equalsIgnoreCase("false")){
 
                 // If username and password does not match display a error message
-                Toast.makeText(LoginActivity.this, "Invalid IMEI not found", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "Invalid IMEI/UUID not found", Toast.LENGTH_LONG).show();
 
-            } else if (result.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
+            } else if (result1.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
 
                 Toast.makeText(LoginActivity.this, "Tidak terhubung dengan Server!", Toast.LENGTH_LONG).show();
 
+            } else if (result1.equalsIgnoreCase("mismatch")) {
+
+                Toast.makeText(LoginActivity.this, "NIK/Password salah!", Toast.LENGTH_LONG).show();
+
+            } else{
+                Toast.makeText(LoginActivity.this, "Terjadi Kesalahan, Silahkan Coba lagi", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -382,5 +406,20 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    public void uuid(){
+        String androidId = Settings.Secure.getString(LoginActivity.this.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        UUID androidId_UUID = null;
+        try {
+            androidId_UUID = UUID
+                    .nameUUIDFromBytes(androidId.getBytes("utf8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String unique_id = androidId_UUID.toString();
+        textUUID.setText(unique_id);
     }
 }

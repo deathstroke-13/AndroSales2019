@@ -29,6 +29,8 @@ public class SessionManager {
     public static final String KEY_IP 		= "ipaddress";
     public static final String KEY_SERVER 	= "server";
     public static final String KEY_NIK      = "NIK";
+    public static final String KEY_UUID     = "uuid";
+    public static final String KEY_PASSWORD = "password";
     // Constructor
     public SessionManager(Context context){
         this._context = context;
@@ -115,6 +117,8 @@ public class SessionManager {
         user.put(KEY_PASS, pref.getString(KEY_PASS, null));
         user.put(KEY_IMEI, pref.getString(KEY_IMEI, null));
         user.put(KEY_NIK, pref.getString(KEY_NIK,null));
+        user.put(KEY_UUID, pref.getString(KEY_UUID, null));
+        user.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
         // return user
         return user;
     }
