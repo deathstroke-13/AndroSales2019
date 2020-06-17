@@ -80,6 +80,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -332,6 +333,11 @@ public class AbsensiActivity extends AppCompatActivity {
         // Add the interceptor to OkHttpClient
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.interceptors().add(interceptor);
+        builder.retryOnConnectionFailure(false);
+        builder.followRedirects(false);
+        builder.followSslRedirects(false);
+        builder.cache(null);
+        builder.connectTimeout(5, TimeUnit.SECONDS);
         OkHttpClient client = builder.build();
 
         Retrofit retrofit = new Retrofit.Builder()

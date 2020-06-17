@@ -159,11 +159,13 @@ public class SlipgajiActivity extends AppCompatActivity implements AdapterView.O
                 String message = response.body().getMessage();
                 if (value.equals("1")) {
                     results = response.body().getResult();
-                    Toast.makeText(SlipgajiActivity.this, value, Toast.LENGTH_LONG).show();
-                    addtoPdf();
+                    Toast.makeText(SlipgajiActivity.this, "Silahkan check document.", Toast.LENGTH_LONG).show();
+                    addtoPdf((ArrayList<Result>) results);
                     progress.dismiss();
 
                 } else {
+                    progress.dismiss();
+                    call.cancel();
                     Toast.makeText(SlipgajiActivity.this, message, Toast.LENGTH_LONG).show();
                 }
 
@@ -173,7 +175,6 @@ public class SlipgajiActivity extends AppCompatActivity implements AdapterView.O
             public void onFailure(Call<Value> call, Throwable t) {
                 t.printStackTrace();
                 t.getMessage();
-                //addtoPdf();
                 call.cancel();
                 progress.dismiss();
             }
@@ -183,11 +184,12 @@ public class SlipgajiActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
-    private void addtoPdf() {
+    private void addtoPdf(ArrayList<Result> results) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
             PdfDocument pdfDoc = new PdfDocument();
             PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(800,400,1).create();
             PdfDocument.Page myPage = pdfDoc.startPage(myPageInfo);
+            String nik = String.valueOf(results.get(1));
 
 
             Paint myPaint = new Paint();
@@ -236,7 +238,7 @@ public class SlipgajiActivity extends AppCompatActivity implements AdapterView.O
             myPage.getCanvas().drawText("Gaji Diterima",x+550,y+280,myPaint);
 
             //Isi Komponen
-            myPage.getCanvas().drawText(": ",x+110,y+40,myPaint);
+            myPage.getCanvas().drawText(": "+nik,x+110,y+40,myPaint);
             myPage.getCanvas().drawText(": Testing Nama",x+110,y+60,myPaint);
             myPage.getCanvas().drawText(": Programmer",x+110,y+80,myPaint);
 

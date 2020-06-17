@@ -468,7 +468,7 @@ public class KunjunganQRActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RegisterAPI api = retrofit.create(RegisterAPI.class);
-        Call<Value> call = api.kunjungan(namaoutlet, ket, LocationLong, LocationLat, kodeImei, img_new_name);
+        Call<Value> call = api.kunjungan(namaoutlet, ket, LocationLong, LocationLat, kodeImei, img_new_name,fake_status);
         call.enqueue(new Callback<Value>() {
             @Override
             public void onResponse(Call<Value> call, Response<Value> response) {

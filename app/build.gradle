@@ -7,7 +7,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 28
         versionCode 1
-        versionName "1.61"
+        versionName "1.62"
         multiDexEnabled true
         useLibrary 'org.apache.http.legacy'
     }

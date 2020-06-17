@@ -64,6 +64,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -78,11 +79,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -463,12 +468,30 @@ public class KunjunganActivity extends AppCompatActivity {
         LocationLong    = etLocationLong.getText().toString();
         LocationLat     = etLocationLat.getText().toString();
 
+        Interceptor interceptor = new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Interceptor.Chain chain) throws IOException {
+                Request newRequest = chain.request().newBuilder().addHeader("User-Agent", "Retrofit-Sample-App").build();
+                return chain.proceed(newRequest);
+            }
+        };
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.interceptors().add(interceptor);
+        builder.retryOnConnectionFailure(false);
+        builder.followRedirects(false);
+        builder.followSslRedirects(false);
+        builder.cache(null);
+        builder.connectTimeout(5, TimeUnit.SECONDS);
+        OkHttpClient client = builder.build();
+
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RegisterAPI api = retrofit.create(RegisterAPI.class);
-        Call<Value> call = api.kunjungan(namaoutlet, ket, LocationLong, LocationLat, kodeImei, img_new_name);
+        Call<Value> call = api.kunjungan(namaoutlet, ket, LocationLong, LocationLat, kodeImei, img_new_name, fake_status);
         call.enqueue(new Callback<Value>() {
             @Override
             public void onResponse(Call<Value> call, Response<Value> response) {

@@ -156,7 +156,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if(id == R.id.action_changePassword){
-
+            Intent changePassword = new Intent(MainActivity.this, ChangePasswordActivity.class);
+            startActivity (changePassword);
         }
         else if (id == R.id.action_about) {
             Toast.makeText(getApplicationContext(), "PT. Hasta Prima Solusi", Toast.LENGTH_SHORT).show();
