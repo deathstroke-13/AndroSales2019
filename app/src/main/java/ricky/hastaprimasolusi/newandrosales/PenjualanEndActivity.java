@@ -3,7 +3,7 @@ package ricky.hastaprimasolusi.newandrosales;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
@@ -23,8 +23,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
-
-import butterknife.OnClick;
 
 public class PenjualanEndActivity extends AppCompatActivity {
 

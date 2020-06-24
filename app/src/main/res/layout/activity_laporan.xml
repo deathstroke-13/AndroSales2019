@@ -13,7 +13,7 @@
     tools:context=".LaporanActivity">
 
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone">
@@ -28,7 +28,7 @@
             android:focusableInTouchMode="false"
             android:hint="Nama" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
 
     <LinearLayout

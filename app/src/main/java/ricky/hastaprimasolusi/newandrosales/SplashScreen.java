@@ -1,9 +1,8 @@
 package ricky.hastaprimasolusi.newandrosales;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.widget.TextView;
 
 public class SplashScreen extends AppCompatActivity {
