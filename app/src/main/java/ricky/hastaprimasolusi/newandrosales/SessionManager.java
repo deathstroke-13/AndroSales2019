@@ -14,7 +14,7 @@ public class SessionManager {
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     Context _context;
-    int PRIVATE_MODE = 0;
+        int PRIVATE_MODE = 0;
 
     // Sharedpref file name
     private static final String PREF_NAME = "AndrosalesPref";
@@ -109,7 +109,7 @@ public class SessionManager {
      * Get stored session data
      * */
     public HashMap<String, String> getUserDetails(){
-        HashMap<String, String> user = new HashMap<String, String>();
+        HashMap<String, String> user = new HashMap<> ();
         // user name
         user.put(KEY_NAME, pref.getString(KEY_NAME, null));
 
@@ -123,7 +123,7 @@ public class SessionManager {
         return user;
     }
     public HashMap<String, String> getSettingDetails(){
-        HashMap<String, String> setting = new HashMap<String, String>();
+        HashMap<String, String> setting = new HashMap<> ();
         // user email id
         setting.put(KEY_IP, pref.getString(KEY_IP, null));
         setting.put(KEY_SERVER, pref.getString(KEY_SERVER, null));

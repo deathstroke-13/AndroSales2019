@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -80,6 +81,7 @@ public class LaporanDetailActivity extends AppCompatActivity {
         });
 
         webView.loadUrl(URL+"laporan/index.php?imei="+kodeImei+"&id="+id_lap);
+        Log.d("Tag :" , URL+"laporan/index.php?imei="+kodeImei+"&id="+id_lap);
 
 
     }

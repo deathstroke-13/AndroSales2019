@@ -1,9 +1,11 @@
 package ricky.hastaprimasolusi.newandrosales;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -35,36 +37,48 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+
+import static android.os.Build.VERSION_CODES.KITKAT;
 
 public class LoginActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
 
     private static final int REQUEST_CODE = 121;
 
-    public static final int CONNECTION_TIMEOUT = 10000;
-    public static final int READ_TIMEOUT = 15000;
+    public static final int CONNECTION_TIMEOUT = 5000;
+    public static final int READ_TIMEOUT = 3000;
 
-    private TextView textView, textUUID;
+    private TextView textUUID;
     private EditText etIMEI,etNIK, etPassword;
 
-    private EditText et_ip,et_folder;
+    //shared preferences for retrieve NIK after logout
+    SharedPreferences sharedpreferences;
+    public static final String mypreference = "mypref";
+    public static final String StoredNIK = "nameKey";
+
+    public String result1,imeigiven;
+
 
     //session
     String kodeImei, IPADDR, NMSERVER, info, strPhoneType, test1;
     SessionManager session;
 
+    @RequiresApi(api = KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        getSupportActionBar().setElevation(0);
+        Objects.requireNonNull (getSupportActionBar ()).setElevation (0);
 
         etIMEI = findViewById(R.id.field_IMEI);
         etIMEI.setEnabled(true);
@@ -72,11 +86,16 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         etPassword = findViewById(R.id.field_Password);
         textUUID = findViewById(R.id.txt_uuid);
 
-        et_ip 	            = findViewById(R.id.et_ip);
-        et_folder 	    	= findViewById(R.id.et_folder);
+        EditText et_ip = findViewById (R.id.et_ip);
+        EditText et_folder = findViewById (R.id.et_folder);
 
         uuid();
         session = new SessionManager(getApplicationContext());
+        sharedpreferences = getSharedPreferences(mypreference,
+                Context.MODE_PRIVATE);
+        if (sharedpreferences.contains(StoredNIK)) {
+            etNIK.setText(sharedpreferences.getString(StoredNIK, ""));
+        }
 
         HashMap<String, String> identifyServer = session.getSettingDetails();
 
@@ -96,7 +115,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
             IPADDR 		= ipAddress;
             NMSERVER 	= nmServer;
         }else{
-            String dataIP	  = "36.94.17.163";
+            String dataIP	  = "36.94.17.162";
             String dataServ   = "androsales_service";
             String uuid = textUUID.getText().toString();
             et_ip.setText(dataIP);
@@ -110,7 +129,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         }
 
         //footer text
-        textView = findViewById(R.id.text_footer);
+        TextView textView = findViewById (R.id.text_footer);
         String version = "1.52";
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -141,14 +160,14 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         }
 
         // show imei
-        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        /*TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        final String imei = manager.getDeviceId();
+        final String imei = manager.getDeviceId();*/
 
         //etIMEI.setText(String.valueOf(imei));
-        etIMEI.setText("865300048276503");
+        //etIMEI.setText("865300048276503");
         /*String androidId = Settings.Secure.getString(LoginActivity.this.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
         UUID androidId_UUID = null;
@@ -180,11 +199,11 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         // you can add a toast message here, to see what happens
 
         // show imei
-        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        /*TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        final String imei = manager.getDeviceId();
+        final String imei = manager.getDeviceId();*/
 
         //etIMEI.setText(String.valueOf(imei));
         //"865300048276503"
@@ -265,7 +284,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
 
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        @RequiresApi(api = KITKAT)
         @Override
         protected String doInBackground(String... params) {
             try {
@@ -276,7 +295,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-                return "exception";
+                return "exception.111";
             }
             try {
                 // Setup HttpURLConnection class to send and receive data from php and mysql
@@ -313,7 +332,6 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
                 e1.printStackTrace();
                 return "exception";
             }
-
             try {
 
                 int response_code = conn.getResponseCode();
@@ -335,12 +353,12 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
                     return(result.toString());
 
                 }else{
-                    return("unsuccessful");
+                    return("unsuccessful.123");
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
-                return "exception";
+                return "exception.123";
             } finally {
                 conn.disconnect();
             }
@@ -354,13 +372,21 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
             String nikID        = etNIK.getText().toString().trim();
 
 
-            Log.e("Character :",result);
-            String[] separated = result.split("\\.");
-            String result1 = separated[0].trim();
-            String imeigiven = separated[1].trim();
+            Pattern regex = Pattern.compile(".");
+            if(regex.matcher (result).find ()){
+                Log.e("Character :",result);
+                String[] separated = result.split("\\.");
+                result1 = separated[0].trim();
+                    imeigiven = separated[1].trim();
 
-            Log.e("Character 1:",result1);
-            Log.e("Character 2:",imeigiven);
+                Log.e("Character 1:",result1);
+                Log.e("Character 2:",imeigiven);
+
+            }else{
+                result1 = result;
+            }
+
+
 
             //this method will be running on UI thread
 
@@ -371,7 +397,14 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
                 /* Here launching another activity when login successful. If you persist login state
                 use sharedPreferences of Android. and logout button to clear sharedPreferences.
                  */
+
+                Log.e("Is in true statement",result1);
                 session.createLoginSession(imeigiven,nikID);
+
+
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString(StoredNIK, nikID);
+                editor.apply ();
 
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -380,17 +413,21 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
             }else if (result1.equalsIgnoreCase("false")){
 
                 // If username and password does not match display a error message
+                Log.e("Is in false statement",result1);
                 Toast.makeText(LoginActivity.this, "Invalid IMEI/UUID not found", Toast.LENGTH_LONG).show();
 
             } else if (result1.equalsIgnoreCase("exception") || result.equalsIgnoreCase("unsuccessful")) {
 
+                Log.e("Is in exception state",result1);
                 Toast.makeText(LoginActivity.this, "Tidak terhubung dengan Server!", Toast.LENGTH_LONG).show();
 
             } else if (result1.equalsIgnoreCase("mismatch")) {
 
+                Log.e("Is in mismatch state",result1);
                 Toast.makeText(LoginActivity.this, "NIK/Password salah!", Toast.LENGTH_LONG).show();
 
             } else{
+                Log.e("Is in else statement",result1);
                 Toast.makeText(LoginActivity.this, "Terjadi Kesalahan, Silahkan Coba lagi", Toast.LENGTH_LONG).show();
             }
         }
@@ -406,17 +443,15 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         startActivity(intent);
     }
 
+    @RequiresApi(api = KITKAT)
     public void uuid(){
-        String androidId = Settings.Secure.getString(LoginActivity.this.getContentResolver(),
+        @SuppressLint("HardwareIds") String androidId = Settings.Secure.getString(LoginActivity.this.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
-        UUID androidId_UUID = null;
-        try {
-            androidId_UUID = UUID
-                    .nameUUIDFromBytes(androidId.getBytes("utf8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        UUID androidId_UUID;
+        androidId_UUID = UUID
+                .nameUUIDFromBytes(androidId.getBytes(StandardCharsets.UTF_8));
 
+        assert androidId_UUID != null;
         String unique_id = androidId_UUID.toString();
         textUUID.setText(unique_id);
     }

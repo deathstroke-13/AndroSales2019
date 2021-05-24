@@ -1,9 +1,5 @@
 package ricky.hastaprimasolusi.newandrosales;
 
-/**
- * Created by sulistiyanto on 07/12/16.
- */
-
 public class Result {
 
     String nama_account;

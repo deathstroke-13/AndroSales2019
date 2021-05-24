@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "200673756652",
+    "project_id": "androsales-2805f",
+    "storage_bucket": "androsales-2805f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:200673756652:android:de80b5ce92353b42306cc9",
+        "android_client_info": {
+          "package_name": "ricky.hastaprimasolusi.newandrosales"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "200673756652-e9lasm8tlf00ppfnt3qcviesgsqospe8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4si6TEAx5xdVOVLob4bw6pAvXPIYIMks"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "200673756652-e9lasm8tlf00ppfnt3qcviesgsqospe8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -127,6 +128,7 @@ public class LaporanActivity extends AppCompatActivity {
                         .baseUrl(BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
+                Log.d (LaporanActivity.class.getSimpleName (),"Base url : "+ BASE_URL);
             }
             return retrofit;
         }
@@ -222,8 +224,8 @@ public class LaporanActivity extends AppCompatActivity {
 
         URL = "http://" + IPADDR + "/" + NMSERVER + "/";
 
-        URL_IMG = "http://"+IPADDR+"/androsales2015/service/photos/";
-        final String URL_IMGs = "http://"+IPADDR+"/androsales2015/service/photos/";
+        URL_IMG = "http://"+IPADDR+"/androsales2020/service/photos/";
+        final String URL_IMGs = "http://"+IPADDR+"/androsales2020/service/photos/";
 
         EditText txtDateAwal= findViewById(R.id.txtdateAwal);
 
@@ -302,7 +304,7 @@ public class LaporanActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-            Toast.makeText(getApplicationContext(), "PT. Hast Prima Solusi", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "PT. Hasta Prima Solusi", Toast.LENGTH_SHORT).show();
             return true;
 
             //Intent i = new Intent(MainActivity.this, AboutActivity.class);

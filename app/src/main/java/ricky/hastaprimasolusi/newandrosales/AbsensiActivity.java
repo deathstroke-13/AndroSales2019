@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -16,22 +17,28 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -48,6 +55,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -87,7 +95,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AbsensiActivity extends AppCompatActivity {
+public class AbsensiActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     SessionManager session;
 
@@ -101,7 +109,7 @@ public class AbsensiActivity extends AppCompatActivity {
     Button bt_absen;
 
     EditText et_odometer, et_namaoutlet, et_ket, etLocationLat, etLocationLong;
-    String odometer, namaoutlet, ket, LocationLat, LocationLong, nilaiAbsen;
+    String odometer, namaoutlet, ket, LocationLat, LocationLong, nilaiAbsen, jen;
 
     private RadioGroup radioGroupAbsensi;
 
@@ -113,6 +121,7 @@ public class AbsensiActivity extends AppCompatActivity {
     ByteArrayOutputStream byteArrayOutputStream;
     byte[] byteArray;
     String ConvertImage;
+    Drawable Draw;
 
     String ImageTag = "image_tag" ;
 
@@ -122,6 +131,8 @@ public class AbsensiActivity extends AppCompatActivity {
     OutputStream outputStream;
 
     BufferedWriter bufferedWriter;
+
+    CardView imagecircle;
 
     int RC;
 
@@ -139,6 +150,7 @@ public class AbsensiActivity extends AppCompatActivity {
 
     public Double latti;
     public Double longi;
+    public FloatingActionButton fab;
 
     public ImageView imgRed, imgGreen;
 
@@ -171,9 +183,13 @@ public class AbsensiActivity extends AppCompatActivity {
 
     // boolean flag to toggle the ui
     private Boolean mRequestingLocationUpdates;
+    Spinner spin;
+    TextView textJenis;
+    String [] jenis = {"Masuk","Pulang"};
 
     //end new
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,12 +212,22 @@ public class AbsensiActivity extends AppCompatActivity {
         imageView =  findViewById(R.id.imageView);
         bt_absen  =  findViewById(R.id.button_simpan_absen);
         byteArrayOutputStream = new ByteArrayOutputStream();
+        textJenis = findViewById (R.id.textJenis);
 
+
+        imagecircle = findViewById (R.id.imagecircle);
         imgGreen =  findViewById(R.id.imageViewGreen);
         imgRed  =  findViewById(R.id.imageViewRed);
 
+        spin = findViewById (R.id.spinnerMasukPulang);
+        spin.setOnItemSelectedListener (this);
 
-        radioGroupAbsensi = findViewById(R.id.et_absensi);
+
+        ArrayAdapter aa = new ArrayAdapter (this, android.R.layout.simple_spinner_item,jenis);
+        aa.setDropDownViewResource (android.R.layout.simple_spinner_dropdown_item);
+        spin.setAdapter (aa);
+
+        //radioGroupAbsensi = findViewById(R.id.et_absensi);
 
         et_odometer     =  findViewById(R.id.et_odometer);
         et_namaoutlet   =  findViewById(R.id.et_namaoutlet);
@@ -299,17 +325,18 @@ public class AbsensiActivity extends AppCompatActivity {
         progress = ProgressDialog.show(AbsensiActivity.this,"Proses Absensi","Please Wait",false,false);
 
         // get selected radio button from radioGroup
-        int selectedId = radioGroupAbsensi.getCheckedRadioButtonId();
+        //int selectedId = radioGroupAbsensi.getCheckedRadioButtonId();
 
         // find the radiobutton by returned id
-        radioButtonAbsensi = findViewById(selectedId);
+        //radioButtonAbsensi = findViewById(selectedId);
 
         odometer        = et_odometer.getText().toString();
         namaoutlet      = et_namaoutlet.getText().toString();
-        ket             = et_ket.getText().toString();
+        //ket             = et_ket.getText().toString();
         LocationLong    = etLocationLong.getText().toString();
         LocationLat     = etLocationLat.getText().toString();
-        nilaiAbsen      = radioButtonAbsensi.getText().toString();
+        jen             = textJenis.getText ().toString ();
+        //nilaiAbsen      = radioButtonAbsensi.getText().toString();
 
 
         // Define the interceptor, add authentication headers
@@ -337,7 +364,7 @@ public class AbsensiActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RegisterAPI api = retrofit.create(RegisterAPI.class);
-        Call<Value> call = api.absensi(odometer, namaoutlet, ket, LocationLong, LocationLat, nilaiAbsen, kodeImei, img_new_name, fake_status);
+        Call<Value> call = api.absensi("0", namaoutlet, jen, LocationLong, LocationLat, nilaiAbsen, kodeImei, img_new_name, fake_status);
         call.enqueue(new Callback<Value>() {
             @Override
             public void onResponse(Call<Value> call, Response<Value> response) {
@@ -350,6 +377,7 @@ public class AbsensiActivity extends AppCompatActivity {
                         client.dispatcher().cancelAll();
                     }else {
                         UploadImageToServer();
+                        Log.d("Tag: ", img_new_name);
 
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         Intent inLogin2 = new Intent(AbsensiActivity.this, MainActivity.class);
@@ -389,13 +417,16 @@ public class AbsensiActivity extends AppCompatActivity {
     }
 
     //
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult (requestCode, resultCode, data);
         if (requestCode == 7 && resultCode == RESULT_OK) {
-            FixBitmap = (Bitmap) data.getExtras().get("data");
-            //Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            imageView.setImageBitmap(FixBitmap);
-            bt_absen.setVisibility(View.VISIBLE);
+            FixBitmap = (Bitmap) data.getExtras ().get ("data");
+            imageView.setImageBitmap (FixBitmap);
+            imagecircle.setVisibility (View.VISIBLE);
+            bt_absen.setVisibility (View.VISIBLE);
+
         }
 
         switch (requestCode) {
@@ -403,11 +434,11 @@ public class AbsensiActivity extends AppCompatActivity {
             case REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        Log.e(TAG, "User agreed to make required location settings changes.");
+                        Log.e (TAG, "User agreed to make required location settings changes.");
                         // Nothing to do. startLocationupdates() gets called in onResume again.
                         break;
                     case Activity.RESULT_CANCELED:
-                        Log.e(TAG, "User chose not to make required location settings changes.");
+                        Log.e (TAG, "User chose not to make required location settings changes.");
                         mRequestingLocationUpdates = false;
                         break;
                 }
@@ -445,7 +476,7 @@ public class AbsensiActivity extends AppCompatActivity {
 
                 ImageProcessClass imageProcessClass = new ImageProcessClass();
 
-                HashMap<String,String> HashMapParams = new HashMap<String,String>();
+                HashMap<String,String> HashMapParams = new HashMap<> ();
 
                 HashMapParams.put(ImageTag, img_new_name);
 
@@ -457,6 +488,16 @@ public class AbsensiActivity extends AppCompatActivity {
         }
         AsyncTaskUploadClass AsyncTaskUploadClassOBJ = new AsyncTaskUploadClass();
         AsyncTaskUploadClassOBJ.execute();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        textJenis.setText (jenis[position]);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        textJenis.setText ("Masuk");
     }
 
     public class ImageProcessClass{
@@ -489,6 +530,7 @@ public class AbsensiActivity extends AppCompatActivity {
                     String RC2;
                     while ((RC2 = bufferedReader.readLine()) != null){
                         stringBuilder.append(RC2);
+                        Log.d (TAG,"Success?? :"+RC2);
                     }
                 }
 
@@ -511,6 +553,7 @@ public class AbsensiActivity extends AppCompatActivity {
                 stringBuilder.append(URLEncoder.encode(KEY.getKey(), "UTF-8"));
                 stringBuilder.append("=");
                 stringBuilder.append(URLEncoder.encode(KEY.getValue(), "UTF-8"));
+                Log.d (TAG,"Message?? :"+stringBuilder.toString ());
             }
             return stringBuilder.toString();
         }
@@ -602,6 +645,7 @@ public class AbsensiActivity extends AppCompatActivity {
      * Update the UI displaying the location data
      * and toggling the buttons
      */
+    @SuppressLint("SetTextI18n")
     private void updateLocationUI() {
         if (mCurrentLocation != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {

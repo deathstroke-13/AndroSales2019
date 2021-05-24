@@ -1,13 +1,14 @@
 package ricky.hastaprimasolusi.newandrosales;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -16,16 +17,10 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -53,6 +48,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.karumi.dexter.BuildConfig;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -63,6 +61,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -77,21 +76,23 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
-public class KunjunganQRActivity extends AppCompatActivity {
+public class BBMActivity extends AppCompatActivity {
 
     SessionManager session;
 
@@ -111,7 +112,7 @@ public class KunjunganQRActivity extends AppCompatActivity {
     byte[] byteArray;
     String ConvertImage;
     String fake_status;
-    String ImageTag = "image_tag";
+    String ImageTag = "image_tag" ;
 
     String ImageName = "image_data";
     java.net.URL url;
@@ -122,13 +123,14 @@ public class KunjunganQRActivity extends AppCompatActivity {
 
     int RC;
 
-    BufferedReader bufferedReader;
+    BufferedReader bufferedReader ;
 
     StringBuilder stringBuilder;
     boolean check = true;
 
-    public String file_name = new SimpleDateFormat ("yyyy_mm_ss").format (new Date ());
-    public String img_new_name = "img_" + file_name + "_" + System.currentTimeMillis ();
+    @SuppressLint("SimpleDateFormat")
+    public String file_name     = new SimpleDateFormat ("yyyy_MM_ss").format(new Date ());
+    public String img_new_name  = "img_"+file_name+"_"+System.currentTimeMillis();
 
     EditText et_namaoutlet, et_ket, etLocationLat, etLocationLong;
     String namaoutlet, ket, LocationLat, LocationLong;
@@ -144,7 +146,7 @@ public class KunjunganQRActivity extends AppCompatActivity {
 
     public ImageView imgRed, imgGreen;
 
-    private static final String TAG = KunjunganActivity.class.getSimpleName ();
+    private static final String TAG = BBMActivity.class.getSimpleName();
 
     // location last updated time
     private String mLastUpdateTime;
@@ -171,169 +173,241 @@ public class KunjunganQRActivity extends AppCompatActivity {
     // boolean flag to toggle the ui
     private Boolean mRequestingLocationUpdates;
 
+    Button btn_BBM;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate (savedInstanceState);
-        setContentView (R.layout.activity_kunjungan);
-        ButterKnife.bind (this);
-        Objects.requireNonNull (getSupportActionBar ()).setElevation (0);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_bbm);
+        ButterKnife.bind(this);
+        Objects.requireNonNull (getSupportActionBar ()).setElevation(0);
 
-        session = new SessionManager (getApplicationContext ());
+        session = new SessionManager(getApplicationContext());
 
-        HashMap<String, String> identifyServer = session.getSettingDetails ();
-        IPADDR = String.valueOf (identifyServer.get (SessionManager.KEY_IP));
-        NMSERVER = String.valueOf (identifyServer.get (SessionManager.KEY_SERVER));
+        HashMap<String, String> identifyServer = session.getSettingDetails();
+        IPADDR = String.valueOf(identifyServer.get(SessionManager.KEY_IP));
+        NMSERVER = String.valueOf(identifyServer.get(SessionManager.KEY_SERVER));
 
-        HashMap<String, String> devId = session.getUserDetails ();
-        kodeImei = devId.get (SessionManager.KEY_IMEI);
+        HashMap<String, String> devId = session.getUserDetails();
+        kodeImei = devId.get(SessionManager.KEY_IMEI);
 
+        btn_BBM = findViewById (R.id.button_confirm_bbm);
         URL = "http://" + IPADDR + "/" + NMSERVER + "/";
 
-        imgButton = findViewById (R.id.searchImageButton);
-        qrButton = findViewById (R.id.qrbutton);
+        imgButton = findViewById(R.id.searchImageButton);
+        qrButton = findViewById(R.id.qrbutton);
 
-        imageView = findViewById (R.id.imageView);
-        imgGreen = findViewById (R.id.imageViewGreen);
-        imgRed = findViewById (R.id.imageViewRed);
+        imageView = findViewById(R.id.imageView);
+        imgGreen = findViewById(R.id.imageViewGreen);
+        imgRed  = findViewById(R.id.imageViewRed);
 
-        bt_kunjungan = findViewById (R.id.button_simpan_kunjungan);
-        byteArrayOutputStream = new ByteArrayOutputStream ();
+        bt_kunjungan  = findViewById(R.id.button_simpan_kunjungan);
+        byteArrayOutputStream = new ByteArrayOutputStream();
 
         //textIndi = (TextView) findViewById(R.id.indi);
 
-        et_namaoutlet = findViewById (R.id.et_namaoutlet);
-        et_ket = findViewById (R.id.et_ket);
-        etLocationLat = findViewById (R.id.etLocationLat);
-        etLocationLong = findViewById (R.id.etLocationLong);
+        et_namaoutlet   = findViewById(R.id.et_namaoutlet);
+        et_ket          = findViewById(R.id.et_ket);
+        etLocationLat   = findViewById(R.id.etLocationLat);
+        etLocationLong  = findViewById(R.id.etLocationLong);
 
-        mHandler = new Handler ();
+        mHandler = new Handler();
 
-        imgButton.setOnClickListener (new View.OnClickListener () {
-            @Override
-            public void onClick(View view) {
-                intent = new Intent (android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult (intent, 7);
-            }
+        imgButton.setOnClickListener(view -> {
+            intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, 7);
         });
 
-        qrButton.setOnClickListener (view -> {
+        qrButton.setOnClickListener(view -> {
             //initiate scan with our custom scan activity
-            new IntentIntegrator (KunjunganQRActivity.this).setCaptureActivity (ScannerActivity.class).initiateScan ();
+            new IntentIntegrator (BBMActivity.this).setCaptureActivity(ScannerActivity.class).initiateScan();
         });
 
         // initialize the necessary libraries
-        init ();
+        init();
 
         // restore the values from saved instance state
-        restoreValuesFromBundle (savedInstanceState);
+        restoreValuesFromBundle(savedInstanceState);
 
         // Requesting ACCESS_FINE_LOCATION using Dexter library
-        Dexter.withActivity (this)
-                .withPermission (Manifest.permission.ACCESS_FINE_LOCATION)
-                .withListener (new PermissionListener () {
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(new PermissionListener () {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
                         mRequestingLocationUpdates = true;
-                        startLocationUpdates ();
+                        startLocationUpdates();
                     }
 
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response) {
-                        if (response.isPermanentlyDenied ()) {
+                        if (response.isPermanentlyDenied()) {
                             // open device settings when the permission is
                             // denied permanently
-                            openSettings ();
+                            openSettings();
                         }
                     }
 
                     @Override
                     public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                        token.continuePermissionRequest ();
+                        token.continuePermissionRequest();
                     }
-                }).check ();
+                }).check();
+
+        btn_BBM.setOnClickListener (v -> {
+            progress = ProgressDialog.show(BBMActivity.this,"Proses BBM","Please Wait",false,false);
+
+            namaoutlet      = et_namaoutlet.getText().toString();
+            ket             = et_ket.getText().toString();
+            LocationLong    = etLocationLong.getText().toString();
+            LocationLat     = etLocationLat.getText().toString();
+
+            Interceptor interceptor = chain -> {
+                Request newRequest = chain.request().newBuilder().addHeader("User-Agent", "Retrofit-Sample-App").build();
+                return chain.proceed(newRequest);
+            };
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.interceptors().add(interceptor);
+            builder.retryOnConnectionFailure(false);
+            builder.followRedirects(false);
+            builder.followSslRedirects(false);
+            builder.cache(null);
+            builder.connectTimeout(5, TimeUnit.SECONDS);
+            OkHttpClient client = builder.build();
+
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(URL)
+                    .client(client)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            RegisterAPI api = retrofit.create(RegisterAPI.class);
+            Call<Value> call = api.kunjungan(namaoutlet, ket, LocationLong, LocationLat, kodeImei, img_new_name, fake_status);
+            call.enqueue(new Callback<Value> () {
+                @Override
+                public void onResponse(Call<Value> call, Response<Value> response) {
+                    assert response.body () != null;
+                    String value = response.body().getValue();
+                    String message = response.body().getMessage();
+                    progress.dismiss();
+                    if (value.equals("1")) {
+                        if(message.equals ("timeout")){
+                            call.cancel();
+                        }else {
+                            UploadImageToServer();
+
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                            Intent inLogin2 = new Intent(BBMActivity.this, MainActivity.class);
+                            startActivity(inLogin2);
+                            finish();
+                        }
+                    } else {
+                        Toast.makeText(BBMActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Value> call, Throwable t) {
+                    t.printStackTrace();
+                    progress.dismiss();
+                    call.cancel();
+                    if (call.isCanceled()) {
+                        Log.e("TAG", "request was cancelled");
+                    }
+                    else {
+                        Log.e("TAG", "other larger issue, i.e. no network connection?");
+                    }
+                    Toast.makeText(BBMActivity.this, "Data gagal diinput, silahkan dicoba kembali", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
 
     }
 
-    public void showResultDialogue(final String result) {
+    /*public void showResultDialogue(final String result) {
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AlertDialog.Builder (this, android.R.style.Theme_Material_Dialog_Alert);
+            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
         } else {
-            builder = new AlertDialog.Builder (this);
+            builder = new AlertDialog.Builder(this);
         }
-        builder.setTitle ("Scan Result")
-                .setMessage ("Scanned result is " + result)
-                .setPositiveButton ("Copy result", (dialog, which) -> {
-                    // continue with delete
-                    ClipboardManager clipboard = (ClipboardManager) getSystemService (CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText ("Scan Result", result);
-                    clipboard.setPrimaryClip (clip);
-                    Toast.makeText (KunjunganQRActivity.this, "Result copied to clipboard", Toast.LENGTH_SHORT).show ();
+        builder.setTitle("Scan Result")
+                .setMessage("Scanned result is " + result)
+                .setPositiveButton("Copy result", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("Scan Result", result);
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(KunjunganActivity.this, "Result copied to clipboard", Toast.LENGTH_SHORT).show();
 
+                    }
                 })
-                .setNegativeButton ("Cancel", (dialog, which) -> {
-                    // do nothing
-                    dialog.dismiss ();
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        dialog.dismiss();
+                    }
                 })
-                .show ();
-    }
+                .show();
+    }*/
 
     @Override
     public void onStart() {
-        super.onStart ();
+        super.onStart();
         // Requesting ACCESS_FINE_LOCATION using Dexter library
-        Dexter.withActivity (this)
-                .withPermission (Manifest.permission.ACCESS_FINE_LOCATION)
-                .withListener (new PermissionListener () {
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
                         mRequestingLocationUpdates = true;
-                        startLocationUpdates ();
+                        startLocationUpdates();
                     }
 
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response) {
-                        if (response.isPermanentlyDenied ()) {
+                        if (response.isPermanentlyDenied()) {
                             // open device settings when the permission is
                             // denied permanently
-                            openSettings ();
+                            openSettings();
                         }
                     }
 
                     @Override
                     public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                        token.continuePermissionRequest ();
+                        token.continuePermissionRequest();
                     }
-                }).check ();
+                }).check();
     }
 
     private void init() {
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient (this);
-        mSettingsClient = LocationServices.getSettingsClient (this);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mSettingsClient = LocationServices.getSettingsClient(this);
 
-        mLocationCallback = new LocationCallback () {
+        mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                super.onLocationResult (locationResult);
+                super.onLocationResult(locationResult);
                 // location is received
-                mCurrentLocation = locationResult.getLastLocation ();
-                mLastUpdateTime = DateFormat.getTimeInstance ().format (new Date ());
+                mCurrentLocation = locationResult.getLastLocation();
+                mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
 
-                updateLocationUI ();
+                updateLocationUI();
             }
         };
 
         mRequestingLocationUpdates = false;
 
-        mLocationRequest = new LocationRequest ();
-        mLocationRequest.setInterval (UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setFastestInterval (FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setPriority (LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder ();
-        builder.addLocationRequest (mLocationRequest);
-        mLocationSettingsRequest = builder.build ();
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        mLocationSettingsRequest = builder.build();
     }
 
     /**
@@ -341,20 +415,20 @@ public class KunjunganQRActivity extends AppCompatActivity {
      */
     private void restoreValuesFromBundle(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey ("is_requesting_updates")) {
-                mRequestingLocationUpdates = savedInstanceState.getBoolean ("is_requesting_updates");
+            if (savedInstanceState.containsKey("is_requesting_updates")) {
+                mRequestingLocationUpdates = savedInstanceState.getBoolean("is_requesting_updates");
             }
 
-            if (savedInstanceState.containsKey ("last_known_location")) {
-                mCurrentLocation = savedInstanceState.getParcelable ("last_known_location");
+            if (savedInstanceState.containsKey("last_known_location")) {
+                mCurrentLocation = savedInstanceState.getParcelable("last_known_location");
             }
 
-            if (savedInstanceState.containsKey ("last_updated_on")) {
-                mLastUpdateTime = savedInstanceState.getString ("last_updated_on");
+            if (savedInstanceState.containsKey("last_updated_on")) {
+                mLastUpdateTime = savedInstanceState.getString("last_updated_on");
             }
         }
 
-        updateLocationUI ();
+        updateLocationUI();
     }
 
 
@@ -362,33 +436,31 @@ public class KunjunganQRActivity extends AppCompatActivity {
      * Update the UI displaying the location data
      * and toggling the buttons
      */
-    @SuppressLint("SetTextI18n")
     private void updateLocationUI() {
         if (mCurrentLocation != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                //for counter fakeGPS using mock provider
-                if (mCurrentLocation.isFromMockProvider ()) {
-                    ((EditText) findViewById (R.id.etLocationLat)).setText (Double.toString (mCurrentLocation.getLatitude ()));
-                    ((EditText) findViewById (R.id.etLocationLong)).setText (Double.toString (mCurrentLocation.getLongitude ()));
-                    fake_status = "1";
+            //for counter fakeGPS using mock provider
+            if(mCurrentLocation.isFromMockProvider()){
+                ((EditText) findViewById(R.id.etLocationLat)).setText(Double.toString(mCurrentLocation.getLatitude()));
+                ((EditText) findViewById(R.id.etLocationLong)).setText(Double.toString(mCurrentLocation.getLongitude()));
+                fake_status = "1";
 
-                    imgRed.setVisibility (View.VISIBLE);
-                    imgGreen.setVisibility (View.GONE);
-                } else {
-                    ((EditText) findViewById (R.id.etLocationLat)).setText (Double.toString (mCurrentLocation.getLatitude ()));
-                    ((EditText) findViewById (R.id.etLocationLong)).setText (Double.toString (mCurrentLocation.getLongitude ()));
-                    fake_status = "0";
+                imgRed.setVisibility(View.GONE);
+                imgGreen.setVisibility(View.VISIBLE);
+            }else {
+                ((EditText) findViewById(R.id.etLocationLat)).setText(Double.toString(mCurrentLocation.getLatitude()));
+                ((EditText) findViewById(R.id.etLocationLong)).setText(Double.toString(mCurrentLocation.getLongitude()));
+                fake_status ="0";
 
-                    imgGreen.setVisibility (View.VISIBLE);
-                    imgRed.setVisibility (View.GONE);
-                }
+                imgGreen.setVisibility(View.VISIBLE);
+                imgRed.setVisibility(View.GONE);
             }
-        } else {
-            ((EditText) findViewById (R.id.etLocationLat)).setText ("");
-            ((EditText) findViewById (R.id.etLocationLong)).setText ("");
+        }
+        else{
+            ((EditText)findViewById(R.id.etLocationLat)).setText("");
+            ((EditText)findViewById(R.id.etLocationLong)).setText("");
 
-            imgRed.setVisibility (View.VISIBLE);
-            imgGreen.setVisibility (View.GONE);
+            imgRed.setVisibility(View.VISIBLE);
+            imgGreen.setVisibility(View.GONE);
         }
         //toggleButtons();
     }
@@ -400,27 +472,21 @@ public class KunjunganQRActivity extends AppCompatActivity {
      */
     private void startLocationUpdates() {
         mSettingsClient
-                .checkLocationSettings (mLocationSettingsRequest)
-                .addOnSuccessListener (this, locationSettingsResponse -> {
-                    Log.i (TAG, "All location settings are satisfied.");
+                .checkLocationSettings(mLocationSettingsRequest)
+                .addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse> () {
+                    @SuppressLint("MissingPermission")
+                    @Override
+                    public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                        Log.i(TAG, "All location settings are satisfied.");
 
-                    //Toast.makeText(getApplicationContext(), "Started location updates!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "Started location updates!", Toast.LENGTH_SHORT).show();
 
-                    //noinspection MissingPermission
-                    if (ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
+                        //noinspection MissingPermission
+                        mFusedLocationClient.requestLocationUpdates(mLocationRequest,
+                                mLocationCallback, Looper.myLooper());
+
+                        updateLocationUI();
                     }
-                    mFusedLocationClient.requestLocationUpdates (mLocationRequest,
-                            mLocationCallback, Looper.myLooper ());
-
-                    updateLocationUI();
                 })
                 .addOnFailureListener(this, e -> {
                     int statusCode = ((ApiException) e).getStatusCode();
@@ -432,7 +498,7 @@ public class KunjunganQRActivity extends AppCompatActivity {
                                 // Show the dialog by calling startResolutionForResult(), and check the
                                 // result in onActivityResult().
                                 ResolvableApiException rae = (ResolvableApiException) e;
-                                rae.startResolutionForResult(KunjunganQRActivity.this, REQUEST_CHECK_SETTINGS);
+                                rae.startResolutionForResult(BBMActivity.this, REQUEST_CHECK_SETTINGS);
                             } catch (IntentSender.SendIntentException sie) {
                                 Log.i(TAG, "PendingIntent unable to execute request.");
                             }
@@ -442,59 +508,13 @@ public class KunjunganQRActivity extends AppCompatActivity {
                                     "fixed here. Fix in Settings.";
                             Log.e(TAG, errorMessage);
 
-                            Toast.makeText(KunjunganQRActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                            Toast.makeText(BBMActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                     }
 
                     updateLocationUI();
                 });
     }
 
-
-
-    @OnClick(R.id.button_simpan_kunjungan) void kunjungan() {
-
-        //membuat progress dialog
-        progress = ProgressDialog.show(KunjunganQRActivity.this,"Proses Kunjungan","Please Wait",false,false);
-
-        namaoutlet      = et_namaoutlet.getText().toString();
-        ket             = et_ket.getText().toString();
-        LocationLong    = etLocationLong.getText().toString();
-        LocationLat     = etLocationLat.getText().toString();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        RegisterAPI api = retrofit.create(RegisterAPI.class);
-        Call<Value> call = api.kunjungan(namaoutlet, ket, LocationLong, LocationLat, kodeImei, img_new_name,fake_status);
-        call.enqueue(new Callback<Value>() {
-            @Override
-            public void onResponse(Call<Value> call, Response<Value> response) {
-                assert response.body () != null;
-                String value = response.body().getValue();
-                String message = response.body().getMessage();
-                progress.dismiss();
-                if (value.equals("1")) {
-                    UploadImageToServer();
-
-                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                    Intent inLogin2 = new Intent(KunjunganQRActivity.this, MainActivity.class);
-                    startActivity(inLogin2);
-                    finish();
-                } else {
-                    Toast.makeText(KunjunganQRActivity.this, message, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Value> call, Throwable t) {
-                t.printStackTrace();
-                progress.dismiss();
-                Toast.makeText(KunjunganQRActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
 
     // untuk mengosongi edittext pada form
     private void kosong(){
@@ -508,10 +528,10 @@ public class KunjunganQRActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 7 && resultCode == RESULT_OK && et_namaoutlet != null) {
-            FixBitmap = (Bitmap) Objects.requireNonNull (data.getExtras ()).get("data");
+            FixBitmap = (Bitmap) data.getExtras().get("data");
             //Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             imageView.setImageBitmap(FixBitmap);
-            bt_kunjungan.setVisibility(View.VISIBLE);
+            btn_BBM.setVisibility(View.VISIBLE);
         }
 
         if(requestCode == 7){
@@ -558,6 +578,7 @@ public class KunjunganQRActivity extends AppCompatActivity {
         byteArray = byteArrayOutputStream.toByteArray();
         ConvertImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
+        @SuppressLint("StaticFieldLeak")
         class AsyncTaskUploadClass extends AsyncTask<Void,Void,String> {
 
             @Override
@@ -576,7 +597,7 @@ public class KunjunganQRActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(Void... params) {
 
-                KunjunganQRActivity.ImageProcessClass imageProcessClass = new KunjunganQRActivity.ImageProcessClass();
+                BBMActivity.ImageProcessClass imageProcessClass = new BBMActivity.ImageProcessClass();
 
                 HashMap<String,String> HashMapParams = new HashMap<> ();
 
@@ -599,7 +620,7 @@ public class KunjunganQRActivity extends AppCompatActivity {
             StringBuilder stringBuilder = new StringBuilder();
 
             try {
-                url = new URL(requestURL);
+                url = new URL (requestURL);
                 httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setReadTimeout(20000);
                 httpURLConnection.setConnectTimeout(20000);
@@ -608,7 +629,7 @@ public class KunjunganQRActivity extends AppCompatActivity {
                 httpURLConnection.setDoOutput(true);
                 outputStream = httpURLConnection.getOutputStream();
                 bufferedWriter = new BufferedWriter(
-                        new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
+                        new OutputStreamWriter (outputStream, StandardCharsets.UTF_8));
                 bufferedWriter.write(bufferedWriterDataFN(PData));
                 bufferedWriter.flush();
                 bufferedWriter.close();
@@ -616,7 +637,7 @@ public class KunjunganQRActivity extends AppCompatActivity {
                 RC = httpURLConnection.getResponseCode();
 
                 if (RC == HttpsURLConnection.HTTP_OK) {
-                    bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+                    bufferedReader = new BufferedReader(new InputStreamReader (httpURLConnection.getInputStream()));
                     stringBuilder = new StringBuilder();
                     String RC2;
                     while ((RC2 = bufferedReader.readLine()) != null){

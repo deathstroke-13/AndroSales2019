@@ -1,137 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#3CDDDDDD"
     android:gravity="top"
     android:orientation="vertical"
-    android:background="#3c8e8e8e"
     tools:context=".AbsensiActivity">
 
     <ScrollView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:orientation="vertical">
-
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <ImageView
                 android:id="@+id/imageViewGreen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_my_location_green"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/imageViewRed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_my_location_red"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
-
-            <TextView
-                android:text="@string/txt_photo"
-                android:paddingLeft="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <ImageButton
-                android:id="@+id/searchImageButton"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:padding="10dp"
-                android:background="#F28033"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:src="@android:drawable/ic_menu_camera" />
-
-            <TextView
-                android:text="@string/txt_odometer"
-                android:paddingLeft="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <EditText
-                android:id="@+id/et_odometer"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="10dp"
                 android:layout_margin="5dp"
-                android:background="@android:color/white"
-                android:hint="@string/txt_odometer"
-                android:inputType="number"
-                android:padding="10dp" />
+                android:tooltipText="Absensi"
+                android:elevation="5dp"
+                >
 
-            <TextView
-                android:text="@string/txt_namaoutlet"
-                android:paddingLeft="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/et_namaoutlet"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="@android:color/white"
-                android:hint="@string/txt_namaoutlet"
-                android:inputType="textPersonName"
-                android:padding="10dp" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="#c5c5c5"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:visibility="gone">
 
-            <TextView
-                android:text="@string/txt_ket"
-                android:paddingLeft="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                        <EditText
+                            android:id="@+id/et_odometer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/selector_bg_edit"
+                            android:hint="Odometer"
+                            android:inputType="number"
+                            android:padding="10dp"
+                            android:textColor="#000000"
+                            android:textCursorDrawable="@drawable/bg_input_cursor" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/et_ket"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="@android:color/white"
-                android:hint="@string/txt_ket"
-                android:inputType="textPersonName"
-                android:padding="10dp" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="#c5c5c5"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp">
 
-            <TextView
-                android:text="@string/txt_absensi"
-                android:paddingLeft="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                        <EditText
+                            android:id="@+id/et_namaoutlet"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/selector_bg_edit"
+                            android:hint="Nama Outlet"
+                            android:inputType="textPersonName"
+                            android:padding="10dp"
+                            android:textColor="#000000"
+                            android:textCursorDrawable="@drawable/bg_input_cursor" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-            <RadioGroup
-                android:id="@+id/et_absensi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="#c5c5c5"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp">
 
-                <RadioButton
-                    android:id="@+id/radioMasuk"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/txt_masuk"
-                    android:checked="true" />
 
-                <RadioButton
-                    android:id="@+id/radioPulang"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/txt_pulang" />
+                        <Spinner
+                            android:id="@+id/spinnerMasukPulang"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/selector_bg_edit"
+                            android:padding="10dp"
 
-            </RadioGroup>
+                            />
 
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="70dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="10dp"
-                android:id="@+id/imageView" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textJenis"
+                            android:visibility="gone"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
 
             <!--hidden-->
             <EditText
@@ -139,35 +125,90 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:visibility="gone"
                 android:background="@android:color/white"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:visibility="gone" />
 
             <EditText
                 android:id="@+id/etLocationLong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:visibility="gone"
                 android:background="@android:color/white"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:visibility="gone" />
             <!--end hidden-->
 
-            <Button
-                android:id="@+id/button_simpan_absen"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:background="#435E7D"
-                android:textColor="@color/colorWhite"
-                android:padding="10dp"
-                android:text="@string/bt_absensi"
-                android:visibility="gone"
-                android:drawableLeft="@drawable/ic_save_white" />
 
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:elevation="5dp"
+                android:padding="10dp"
+                app:cardCornerRadius="8dp">
+
+                <Button
+                    android:id="@+id/button_simpan_absen"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="#435E7D"
+                    android:drawableLeft="@drawable/ic_save_white"
+                    android:padding="10dp"
+                    android:text="@string/bt_absensi"
+                    android:textColor="@color/colorWhite"
+                    android:visibility="gone" />
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
+
     </ScrollView>
 
-</LinearLayout>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/imagecircle"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:cardCornerRadius="30dp"
+        android:visibility="invisible"
+        android:layout_marginBottom="80dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+             />
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/searchImageButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="end"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        app:backgroundTint="#101010"
+        app:srcCompat="@android:drawable/ic_menu_camera"
+        android:layout_alignParentEnd="true" />
+
+
+</RelativeLayout>

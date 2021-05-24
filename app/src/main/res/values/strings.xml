@@ -38,6 +38,8 @@
     <string name="txt_menu_biayabbm">Biaya BBM</string>
     <string name="txt_menu_penjualan">Penjualan</string>
     <string name="txt_menu_kunjungan">Kunjungan</string>
+    <string name="txt_menu_approval">Approval</string>
+    <string name="txt_menu_takeLeave">Cuti</string>
 
     <string name="txt_odometer">Odometer</string>
     <string name="txt_namaoutlet">Nama Outlet</string>
@@ -65,4 +67,27 @@
     <string name="turn_on_flashlight">flashLight off</string>
     <string name="title_activity_main">QR and Barcode Scanner</string>
     <string name="message">Place a barcode inside the viewfinder rectangle to scan it.</string>
+
+    <string name="no_location_detected">
+        No location detected. Make sure location is enabled on the device.
+    </string>
+    <string name="permission_rationale">Location permission is needed for core functionality</string>
+    <string name="permission_denied_explanation">Permission was denied, but is needed for core
+        functionality.</string>
+    <string name="settings">Settings</string>
+    <string name="masuk">Masuk</string>
+    <string name="pulang">Pulang</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="menu_self_service">Menu Self-Service</string>
+    <string name="information">Information</string>
+    <string name="input_bbm">Input BBM</string>
+    <string name="confirm">Confirm</string>
+
+    <string-array name="pengajuan">
+        <item>Cuti Khusus</item>
+        <item>Ijin</item>
+        <item>Sakit</item>
+        <item>Lembur</item>
+    </string-array>
 </resources>

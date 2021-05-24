@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     String kodeImei,IPADDR,NMSERVER;
 
     private TextView textView;
-    Button btPenjualan, btAbsen, btKunjungan, btbiaya_bbm, bt_laporan, bt_slipgaji;
+    Button btPenjualan, btAbsen, btKunjungan, btbiaya_bbm, bt_laporan, bt_slipgaji, bt_cuti, bt_approval, bt_bbm;
 
 
     @Override
@@ -39,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
         btbiaya_bbm = findViewById(R.id.bt_biaya_bbm);
         bt_laporan = findViewById(R.id.bt_laporan);
         bt_slipgaji = findViewById(R.id.bt_slipGaji);
+        bt_cuti = findViewById (R.id.bt_takeLeave);
+        bt_approval = findViewById (R.id.bt_Approval);
+        bt_bbm = findViewById (R.id.bt_BBM);
 
         session = new SessionManager(getApplicationContext());
 
@@ -99,6 +102,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        bt_bbm.setOnClickListener (new View.OnClickListener () {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent (MainActivity.this, BBMActivity.class);
+                startActivity (intent);
+            }
+        });
+
         btKunjungan.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
                 // Open StandardWebView.class
@@ -129,6 +140,22 @@ public class MainActivity extends AppCompatActivity {
 
                 //Add the bundle to the intent
                 startActivity(intent);
+            }
+        });
+
+        bt_cuti.setOnClickListener (new View.OnClickListener () {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent (MainActivity.this, LeaveActivity.class);
+                startActivity (intent);
+            }
+        });
+
+        bt_approval.setOnClickListener (new View.OnClickListener () {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent (MainActivity.this, SpvMenu.class);
+                startActivity (intent);
             }
         });
 

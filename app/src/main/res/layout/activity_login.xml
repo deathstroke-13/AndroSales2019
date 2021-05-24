@@ -141,16 +141,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="25dp"
-                android:gravity="center">
+                android:layout_gravity="center"
+                android:gravity="center"
+                >
 
-                <Button
-                    android:id="@+id/loginButton"
-                    android:layout_width="150dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/bt_shape"
-                    android:onClick="cekImei"
-                    android:text="@string/go"
-                    android:textColor="@color/colorAccent"></Button>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_height="match_parent">
+                    <Button
+                        android:id="@+id/loginButton"
+                        android:layout_width="150dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/bt_shape"
+                        android:onClick="cekImei"
+                        android:text="@string/go"
+                        android:textColor="@color/colorAccent" />
+
+                    <ImageButton
+                        android:id="@+id/btn_fingerprint"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/fingerprint"
+                        android:layout_marginStart="5dp"
+                        android:background="#FFFFFF"
+                        android:scaleType="centerCrop"
+                        />
+
+                </LinearLayout>
+
+
             </RelativeLayout>
 
             <TextView
