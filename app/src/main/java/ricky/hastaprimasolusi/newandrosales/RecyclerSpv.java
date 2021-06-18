@@ -57,8 +57,14 @@ public class RecyclerSpv extends RecyclerView.Adapter<RecyclerSpv.ViewHolder> {
             case "3":
                 holder.txtpengajuan.setText ("Sakit");
                 break;
-            default:
+            case "4":
                 holder.txtpengajuan.setText ("Lembur");
+                break;
+            case "5":
+                holder.txtpengajuan.setText ("Cuti Khusus");
+                break;
+            default:
+                holder.txtpengajuan.setText ("Perjalanan Dinas");
                 break;
         }
         holder.txtpengaju.setText (listData.getPengaju ());

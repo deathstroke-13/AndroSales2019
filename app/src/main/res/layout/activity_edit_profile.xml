@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditProfileActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:textStyle="bold"
+            android:text="Edit Profile"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nama_user"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:textSize="15sp"
+            />
+
+
+        <EditText
+            android:id="@+id/et_nama"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:hint="@string/Username"
+            android:autofillHints="username"
+            android:background="@drawable/rounded_et"
+            android:inputType="text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_rekening"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:textSize="15sp"
+
+            />
+
+        <EditText
+            android:id="@+id/et_norek"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/rounded_et"
+            android:hint="@string/no_rekening"
+            android:inputType="number"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/email"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:textSize="15sp"
+            />
+
+        <EditText
+            android:id="@+id/et_email"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:autofillHints="email"
+            android:background="@drawable/rounded_et"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_handphone"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:textSize="15sp"
+            />
+
+        <EditText
+            android:id="@+id/et_nohp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:autofillHints="phonenumber"
+            android:background="@drawable/rounded_et"
+            android:hint="@string/no_handphone"
+            android:inputType="phone"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/npwp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:textSize="15sp"
+            />
+
+        <EditText
+            android:id="@+id/et_npwp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/rounded_et"
+            android:hint="@string/npwp"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/kk"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:textSize="15sp"
+            />
+
+        <EditText
+            android:id="@+id/et_kk"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/rounded_et"
+            android:hint="@string/kk"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ktp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:textSize="15sp"
+            />
+
+        <EditText
+            android:id="@+id/et_ktp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/rounded_et"
+            android:hint="@string/ktp"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alamat"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:textSize="15sp"
+            />
+
+        <EditText
+            android:id="@+id/et_address"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/rounded_et"
+            android:hint="@string/alamat"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLines="3"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+
+        <Button
+            android:id="@+id/btn_save_edit"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:drawableStart="@drawable/ic_save_white"
+            android:background="@drawable/custom_button_1"
+            android:text="@string/edit_changes"
+            android:textAllCaps="false"
+            />
+    </LinearLayout>
+
+
+
+</ScrollView>

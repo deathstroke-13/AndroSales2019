@@ -83,11 +83,31 @@
     <string name="information">Information</string>
     <string name="input_bbm">Input BBM</string>
     <string name="confirm">Confirm</string>
+    <string name="edit">Edit</string>
+    <string name="profile">Profile</string>
+    <string name="pengajuan">Pengajuan</string>
+    <string name="no_surat">No. Surat</string>
+    <string name="nama_user">Nama User</string>
+    <string name="status">Status</string>
+    <string name="active">Active</string>
+    <string name="bank">Bank</string>
+    <string name="no_rekening">No Rekening</string>
+    <string name="email">Email</string>
+    <string name="no_handphone">No Handphone</string>
+    <string name="npwp">NPWP</string>
+    <string name="kk">KK</string>
+    <string name="ktp">KTP</string>
+    <string name="alamat">Alamat</string>
+    <string name="edit_changes">Edit Changes</string>
+    <string name="ganti_password">Ganti Password</string>
+
 
     <string-array name="pengajuan">
-        <item>Cuti Khusus</item>
+        <item>Cuti</item>
         <item>Ijin</item>
         <item>Sakit</item>
         <item>Lembur</item>
+        <item>Cuti Khusus</item>
+        <item>Perjalanan Dinas</item>
     </string-array>
 </resources>

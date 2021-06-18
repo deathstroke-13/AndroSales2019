@@ -98,7 +98,7 @@
                 />
 
             <TextView
-                android:text="@string/txt_ket"
+                android:text="@string/txt_odometer"
                 android:paddingLeft="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -109,8 +109,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:background="@android:color/white"
-                android:hint="@string/txt_ket"
-                android:inputType="textPersonName"
+                android:hint="@string/txt_odometer"
+                android:inputType="number"
                 android:padding="10dp" />
 
 

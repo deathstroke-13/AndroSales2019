@@ -204,7 +204,7 @@
                         android:layout_weight="1"
                         android:layout_margin="10dp"
                         android:paddingTop="21dp"
-                        android:text="@string/txt_menu_takeLeave"
+                        android:text="@string/pengajuan"
                         android:textColor="@android:color/black"
                         android:layout_gravity="center" />
 
@@ -291,6 +291,7 @@
                         android:textColor="@android:color/black"
                         android:layout_gravity="center" />
 
+
                     <Button
                         android:layout_marginTop="10dp"
                         android:layout_width="100dp"
@@ -341,6 +342,8 @@
                         android:visibility="gone" />
 
                 </LinearLayout>
+
+
 
             </LinearLayout>
 

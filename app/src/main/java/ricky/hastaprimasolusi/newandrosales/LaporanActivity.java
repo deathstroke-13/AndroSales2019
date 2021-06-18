@@ -224,8 +224,8 @@ public class LaporanActivity extends AppCompatActivity {
 
         URL = "http://" + IPADDR + "/" + NMSERVER + "/";
 
-        URL_IMG = "http://"+IPADDR+"/androsales2020/service/photos/";
-        final String URL_IMGs = "http://"+IPADDR+"/androsales2020/service/photos/";
+        URL_IMG = "http://"+IPADDR+"/androsales2015/service/photos/";
+        final String URL_IMGs = "http://"+IPADDR+"/androsales2015/service/photos/";
 
         EditText txtDateAwal= findViewById(R.id.txtdateAwal);
 

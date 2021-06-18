@@ -1,5 +1,7 @@
 package ricky.hastaprimasolusi.newandrosales;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -12,7 +14,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     String kodeImei,IPADDR,NMSERVER;
 
-    private TextView textView;
     Button btPenjualan, btAbsen, btKunjungan, btbiaya_bbm, bt_laporan, bt_slipgaji, bt_cuti, bt_approval, bt_bbm;
 
 
@@ -31,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setElevation(0);
+        Objects.requireNonNull (getSupportActionBar ()).setElevation(0);
+
+        myAlarmF();
+        myAlarmL();
 
         btPenjualan = findViewById(R.id.bt_penjualan);
         btAbsen = findViewById(R.id.bt_absen);
@@ -42,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         bt_cuti = findViewById (R.id.bt_takeLeave);
         bt_approval = findViewById (R.id.bt_Approval);
         bt_bbm = findViewById (R.id.bt_BBM);
+
 
         session = new SessionManager(getApplicationContext());
 
@@ -55,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         URL = "http://"+IPADDR+"/"+NMSERVER+"/";
 
         //footer text
-        textView = findViewById(R.id.langTextView);
+        TextView textView = findViewById (R.id.langTextView);
         String version = "1.51";
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -64,102 +72,121 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         textView.setText("By PT. Hasta Prima Solusi - v." + version);
-        bt_slipgaji.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                Intent intent = new Intent(MainActivity.this, SlipgajiActivity.class);
-                startActivity(intent);
-            }
+        bt_slipgaji.setOnClickListener(arg0 -> {
+            Intent intent = new Intent(MainActivity.this, SlipgajiActivity.class);
+            startActivity(intent);
         });
 
-        btAbsen.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
-                // Open StandardWebView.class
-                Intent intent = new Intent(MainActivity.this,
-                        AbsensiActivity.class);
-                /*
-                //Create the bundle
-                Bundle bundle = new Bundle();
+        btAbsen.setOnClickListener(arg0 -> {
+            // Open StandardWebView.class
+            Intent intent = new Intent(MainActivity.this,
+                    AbsensiActivity.class);
+            /*
+            //Create the bundle
+            Bundle bundle = new Bundle();
 
-                //Add your data to bundle
-                bundle.putString("imei", kodeImei);
-                bundle.putString("ip", IPADDR);
-                bundle.putString("path", NMSERVER);
-                */
-                //Add the bundle to the intent
-                startActivity(intent);
-            }
+            //Add your data to bundle
+            bundle.putString("imei", kodeImei);
+            bundle.putString("ip", IPADDR);
+            bundle.putString("path", NMSERVER);
+            */
+            //Add the bundle to the intent
+            startActivity(intent);
         });
 
-        btbiaya_bbm.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
-                // Open StandardWebView.class
-                Intent intent = new Intent(MainActivity.this,
-                        BiayaBBMActivity.class);
+        btbiaya_bbm.setOnClickListener(arg0 -> {
+            // Open StandardWebView.class
+            Intent intent = new Intent(MainActivity.this,
+                    BiayaBBMActivity.class);
 
-                //Add the bundle to the intent
-                startActivity(intent);
-            }
+            //Add the bundle to the intent
+            startActivity(intent);
         });
 
-        bt_bbm.setOnClickListener (new View.OnClickListener () {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent (MainActivity.this, BBMActivity.class);
-                startActivity (intent);
-            }
+        bt_bbm.setOnClickListener (v -> {
+            Intent intent = new Intent (MainActivity.this, BBMActivity.class);
+            startActivity (intent);
         });
 
-        btKunjungan.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
-                // Open StandardWebView.class
-                Intent intent = new Intent(MainActivity.this,
-                        KunjunganActivity.class);
+        btKunjungan.setOnClickListener(arg0 -> {
+            // Open StandardWebView.class
+            Intent intent = new Intent(MainActivity.this,
+                    KunjunganActivity.class);
 
-                //Add the bundle to the intent
-                startActivity(intent);
-            }
+            //Add the bundle to the intent
+            startActivity(intent);
         });
 
-        btPenjualan.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
-                // Open StandardWebView.class
-                Intent intent = new Intent(MainActivity.this,
-                        PenjualanActivity.class);
+        btPenjualan.setOnClickListener(arg0 -> {
+            // Open StandardWebView.class
+            Intent intent = new Intent(MainActivity.this,
+                    PenjualanActivity.class);
 
-                //Add the bundle to the intent
-                startActivity(intent);
-            }
+            //Add the bundle to the intent
+            startActivity(intent);
         });
 
-        bt_laporan.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
-                // Open StandardWebView.class
-                Intent intent = new Intent(MainActivity.this,
-                        LaporanListActivity.class);
+        bt_laporan.setOnClickListener(arg0 -> {
+            // Open StandardWebView.class
+            Intent intent = new Intent(MainActivity.this,
+                    LaporanListActivity.class);
 
-                //Add the bundle to the intent
-                startActivity(intent);
-            }
+            //Add the bundle to the intent
+            startActivity(intent);
         });
 
-        bt_cuti.setOnClickListener (new View.OnClickListener () {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent (MainActivity.this, LeaveActivity.class);
-                startActivity (intent);
-            }
+        bt_cuti.setOnClickListener (v -> {
+            Intent intent = new Intent (MainActivity.this, LeaveActivity.class);
+            startActivity (intent);
         });
 
-        bt_approval.setOnClickListener (new View.OnClickListener () {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent (MainActivity.this, SpvMenu.class);
-                startActivity (intent);
-            }
+        bt_approval.setOnClickListener (v -> {
+            Intent intent = new Intent (MainActivity.this, SpvMenu.class);
+            startActivity (intent);
         });
 
 
+
+    }
+
+    public void myAlarmF() {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 7);
+        calendar.set(Calendar.MINUTE, 40);
+        calendar.set(Calendar.SECOND, 0);
+
+        if (calendar.getTime().compareTo(new Date ()) < 0)
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+        Intent intent = new Intent(getApplicationContext(), AbsensiActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        if (alarmManager != null) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
+        }
+
+    }
+
+    public void myAlarmL(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 16);
+        calendar.set(Calendar.MINUTE, 30);
+        calendar.set(Calendar.SECOND, 0);
+
+        if (calendar.getTime().compareTo(new Date ()) < 0)
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+        Intent intent = new Intent(getApplicationContext(), AbsensiActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        if (alarmManager != null) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
+        }
     }
 
     public void logOut(View view)
@@ -182,7 +209,12 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if(id == R.id.action_changePassword){
+        if(id == R.id.action_profile){
+
+            Intent intent = new Intent (MainActivity.this, ProfileActivity.class);
+            startActivity (intent);
+
+        } else if(id == R.id.action_changePassword){
             Intent changePassword = new Intent(MainActivity.this, ChangePasswordActivity.class);
             startActivity (changePassword);
         }

@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
-            android:text="Pengajuan"
+            android:text="@string/pengajuan"
             android:textSize="18sp"
             android:fontFamily="@font/opensans_regular"/>
 
@@ -46,6 +46,39 @@
                 android:layout_height="match_parent"
 
                 />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/txtNoSurat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/no_surat"
+            android:textSize="18sp"
+            android:fontFamily="@font/opensans_regular"
+            android:visibility="gone"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvNoSurat"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            app:cardCornerRadius="5dp"
+            android:elevation="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="7dp"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/editTextNoSurat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:background="#FFF"
+                android:textSize="18sp"
+                android:gravity="start|top"
+                android:inputType="textMultiLine" />
         </androidx.cardview.widget.CardView>
 
         <TextView

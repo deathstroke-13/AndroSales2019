@@ -35,6 +35,16 @@ public interface RegisterAPI {
                         @Field("fake_status")String fake_status);
 
     @FormUrlEncoded
+    @POST("API/odometer.php")
+    Call<Value> odometer(@Field("namaoutlet") String namaoutlet,
+                          @Field("ket") String ket,
+                          @Field("LocationLong") String LocationLong,
+                          @Field("LocationLat") String LocationLat,
+                          @Field("kodeImei") String kodeImei,
+                          @Field("image_data") String img_new_name,
+                          @Field("fake_status")String fake_status);
+
+    @FormUrlEncoded
     @POST("API/penjualan.php")
     Call<Value> penjualan(@Field("namaoutlet") String namaoutlet,
                           @Field("ket") String ket,

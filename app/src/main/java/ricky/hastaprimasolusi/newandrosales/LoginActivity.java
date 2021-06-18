@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
 
 
     //session
-    String kodeImei, IPADDR, NMSERVER, info, strPhoneType, test1;
+    String kodeImei, IPADDR , IPADDR2, NMSERVER, info, strPhoneType, test1;
     SessionManager session;
 
     @RequiresApi(api = KITKAT)
@@ -113,9 +113,10 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
             session.createSettingSession(ipAddress,nmServer);
 
             IPADDR 		= ipAddress;
+            IPADDR2     = "103.83.179.211";
             NMSERVER 	= nmServer;
         }else{
-            String dataIP	  = "36.94.17.162";
+            String dataIP	  = "36.94.17.163";
             String dataServ   = "androsales_service";
             String uuid = textUUID.getText().toString();
             et_ip.setText(dataIP);
@@ -124,6 +125,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
             session.createSettingSession(dataIP,dataServ);
 
             IPADDR 		= dataIP;
+            IPADDR2     = "103.83.179.211";
             NMSERVER 	= dataServ;
 
         }
@@ -272,6 +274,10 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         ProgressDialog pdLoading = new ProgressDialog(LoginActivity.this);
         HttpURLConnection conn;
         URL url = null;
+        URL url2 = null;
+
+        String URL = "http://"+IPADDR+"/"+NMSERVER+"/loginNIKUUID.inc.php";
+        String URL2 = "http://"+IPADDR2+"/"+NMSERVER+"/loginNIKUUID.inc.php";
 
         @Override
         protected void onPreExecute() {
@@ -287,10 +293,14 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
         @RequiresApi(api = KITKAT)
         @Override
         protected String doInBackground(String... params) {
+           return connect(URL, params);
+        }
+
+        private String connect(String url, String[] params) {
             try {
 
                 // Enter URL address where your php file resides
-                url = new URL("http://"+IPADDR+"/"+NMSERVER+"/loginNIKUUID.inc.php");
+                url2 = new URL(url);
 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
@@ -299,7 +309,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
             }
             try {
                 // Setup HttpURLConnection class to send and receive data from php and mysql
-                conn = (HttpURLConnection)url.openConnection();
+                conn = (HttpURLConnection)url2.openConnection();
                 conn.setReadTimeout(READ_TIMEOUT);
                 conn.setConnectTimeout(CONNECTION_TIMEOUT);
                 conn.setRequestMethod("POST");
@@ -327,6 +337,13 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
                 os.close();
                 conn.connect();
 
+            } catch (SocketTimeoutException e){
+                e.printStackTrace ();
+                if(url.equals (URL)){
+                    return connect(URL2, params);
+                }else {
+                    return "exception";
+                }
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();

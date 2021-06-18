@@ -17,6 +17,8 @@
 
     <color name="red">#FF0000</color>
     <color name="blue">#0033FF</color>
+    <color name="startblue">#019809</color>
+    <color name="endblue">#0B2691</color>
 
     <color name="transparent_blue">#322100c8</color>
 </resources>

@@ -37,6 +37,14 @@ import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import ricky.hastaprimasolusi.newandrosales.SendNotification.APIService;
+import ricky.hastaprimasolusi.newandrosales.SendNotification.Client;
+import ricky.hastaprimasolusi.newandrosales.SendNotification.Data;
+import ricky.hastaprimasolusi.newandrosales.SendNotification.MyResponse;
+import ricky.hastaprimasolusi.newandrosales.SendNotification.NotificationSender;
 import ricky.hastaprimasolusi.newandrosales.app.AppController;
 
 public class SubmitLeave extends AppCompatActivity {
@@ -66,8 +74,11 @@ public class SubmitLeave extends AppCompatActivity {
     @SuppressLint("NonConstantResourceId")
     @BindView (R.id.txtCode) TextView txtCode;
     @SuppressLint("NonConstantResourceId")
-    @BindView (R.id.editTextMultiLine)
-    EditText txtAlasan;
+    @BindView (R.id.editTextMultiLine) EditText txtAlasan;
+    @SuppressLint("NonConstantResourceId")
+    @BindView (R.id.txtNoSurat) TextView txtNoSurat;
+    @SuppressLint("NonConstantResourceId")
+    @BindView (R.id.cvNoSurat) CardView cvNoSurat;
 
     @SuppressLint("NonConstantResourceId")
     @BindView (R.id.etDateAwal) EditText dateAwal;
@@ -82,8 +93,8 @@ public class SubmitLeave extends AppCompatActivity {
     Button btnPengajuan;
 
 
-    String[] pengajuan = {"Cuti","Ijin","Sakit","Lembur","Cuti Khusus"};
-    String[] cuti = {"Menikah","Urusan Anak","Meninggal","Lain - Lain"};
+    String[] pengajuan = {"Cuti","Ijin","Sakit","Lembur","Cuti Khusus","Perjalanan Dinas"};
+    String[] cuti = {"Menikah (3 Hari)","Anak Menikah (2 Hari)","Khitan/Babtis Anak (2 Hari)","Istri Melahirkan (2 Hari)","Keluarga Inti Meninggal (2 Hari)","Keluarga satu Rumah Meninggal (1 Hari)"};
 
     private static final String TAG = SubmitLeave.class.getSimpleName();
 
@@ -136,6 +147,8 @@ public class SubmitLeave extends AppCompatActivity {
                 if(Objects.equals (pengajuan[position], "Cuti")){
                     txtCuti.setVisibility (View.VISIBLE);
                     cvCuti.setVisibility (View.VISIBLE);
+                    txtNoSurat.setVisibility (View.GONE);
+                    cvNoSurat.setVisibility (View.GONE);
                     ArrayAdapter<String> adapter2 = new ArrayAdapter<> (SubmitLeave.this,
                             android.R.layout.simple_spinner_dropdown_item, cuti);
                     adapter2.setDropDownViewResource (android.R.layout.simple_spinner_dropdown_item);
@@ -145,21 +158,36 @@ public class SubmitLeave extends AppCompatActivity {
                 }else if (Objects.equals (pengajuan[position], "Ijin")){
                     txtCuti.setVisibility (View.GONE);
                     cvCuti.setVisibility (View.GONE);
+                    txtNoSurat.setVisibility (View.GONE);
+                    cvNoSurat.setVisibility (View.GONE);
                     txtIdPengajuan.setText ("2");
                     Log.e ("tag:",txtIdPengajuan.getText ().toString ());
                 }else if (Objects.equals (pengajuan[position], "Sakit")){
                     txtCuti.setVisibility (View.GONE);
                     cvCuti.setVisibility (View.GONE);
+                    txtNoSurat.setVisibility (View.GONE);
+                    cvNoSurat.setVisibility (View.GONE);
                     txtIdPengajuan.setText ("3");
                     Log.e ("tag:",txtIdPengajuan.getText ().toString ());
                 }else if (Objects.equals (pengajuan[position], "Lembur")){
                     txtCuti.setVisibility (View.GONE);
                     cvCuti.setVisibility (View.GONE);
+                    txtNoSurat.setVisibility (View.GONE);
+                    cvNoSurat.setVisibility (View.GONE);
                     txtIdPengajuan.setText ("4");
                     Log.e ("tag:",txtIdPengajuan.getText ().toString ());
                 }else if (Objects.equals (pengajuan[position], "Cuti Khusus")){
                     txtCuti.setVisibility (View.GONE);
                     cvCuti.setVisibility (View.GONE);
+                    txtNoSurat.setVisibility (View.GONE);
+                    cvNoSurat.setVisibility (View.GONE);
+                    txtIdPengajuan.setText ("5");
+                    Log.e ("tag:",txtIdPengajuan.getText ().toString ());
+                }else if (Objects.equals (pengajuan[position], "Perjalanan Dinas")){
+                    txtCuti.setVisibility (View.GONE);
+                    cvCuti.setVisibility (View.GONE);
+                    txtNoSurat.setVisibility (View.VISIBLE);
+                    cvNoSurat.setVisibility (View.VISIBLE);
                     txtIdPengajuan.setText ("5");
                     Log.e ("tag:",txtIdPengajuan.getText ().toString ());
                 }
@@ -253,8 +281,10 @@ public class SubmitLeave extends AppCompatActivity {
                 success = jObj.getInt ("success");
                 if(success == 1){
                     progressDialog.dismiss ();
+                    String token = jObj.getString ("token");
                     finish ();
-                    sendNotification();
+                    Log.d (TAG,"Token : "+token);
+                    sendNotification(token);
                     //UploadImage ();
                 }
                 Toast.makeText (getApplicationContext (),jObj.getString ("message"),Toast.LENGTH_LONG).show ();
@@ -262,11 +292,6 @@ public class SubmitLeave extends AppCompatActivity {
             }catch (JSONException e){
                 progressDialog.dismiss ();
                 e.printStackTrace ();
-                Log.e(TAG, "Awal: " + dateAwal1);
-                Log.e(TAG, "Akhir: " + dateAkhir1);
-                Log.e(TAG, "idpengajuan: " + pengajuan);
-                Log.e(TAG, "Alasan: " + alasan1);
-                Log.e(TAG, "code: " + code1);
                 Log.d("Error :",String.valueOf (e));
             }
         }, error -> {
@@ -294,8 +319,28 @@ public class SubmitLeave extends AppCompatActivity {
         AppController.getInstance ().addToRequestQueue (strReq, tag_json_obj);
     }
 
-    private void sendNotification() {
+    private void sendNotification(String token) {
+        Data data = new Data ("Pengajuan Cuti/Ijin","Testing");
+        NotificationSender sender = new NotificationSender (data, token);
+        APIService apiService = Client.getClient ("https://fcm.googleapis.com/").create (APIService.class);
+        apiService.sendNotifcation (sender).enqueue (new Callback<MyResponse> () {
+            @Override
+            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                if (response.code() == 200) {
+                    assert response.body () != null;
+                    if (response.body().success != 1) {
+                        Log.d (TAG,"Failed to send");
+                    } else {
+                        Log.d (TAG,"Notification send!");
+                    }
+                }
+            }
 
+            @Override
+            public void onFailure(Call<MyResponse> call, Throwable t) {
+                Log.d (TAG,t.toString ());
+            }
+        });
     }
 
     private static String getRandomString()
