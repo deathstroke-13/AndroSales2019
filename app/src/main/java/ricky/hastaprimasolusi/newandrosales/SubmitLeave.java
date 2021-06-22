@@ -76,9 +76,11 @@ public class SubmitLeave extends AppCompatActivity {
     @SuppressLint("NonConstantResourceId")
     @BindView (R.id.editTextMultiLine) EditText txtAlasan;
     @SuppressLint("NonConstantResourceId")
-    @BindView (R.id.txtNoSurat) TextView txtNoSurat;
+    @BindView (R.id.txtTujuan) TextView txtTujuan;
     @SuppressLint("NonConstantResourceId")
-    @BindView (R.id.cvNoSurat) CardView cvNoSurat;
+    @BindView (R.id.editTextTjuan) EditText etTjuan;
+    @SuppressLint("NonConstantResourceId")
+    @BindView (R.id.cvTjuan) CardView cvTjuan;
 
     @SuppressLint("NonConstantResourceId")
     @BindView (R.id.etDateAwal) EditText dateAwal;
@@ -115,7 +117,7 @@ public class SubmitLeave extends AppCompatActivity {
     private static final String ALLOWED_CHARACTERS ="0123456789QWERTYUIOPLKJHGFDSAZCXVBNM";
 
 
-    String dateAwalan, dateAkhiran, id_pengajuan, alasan, code;
+    String dateAwalan, dateAkhiran, id_pengajuan, alasan, code, tujuan;
 
 
     @Override
@@ -145,56 +147,60 @@ public class SubmitLeave extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(Objects.equals (pengajuan[position], "Cuti")){
-                    txtCuti.setVisibility (View.VISIBLE);
-                    cvCuti.setVisibility (View.VISIBLE);
-                    txtNoSurat.setVisibility (View.GONE);
-                    cvNoSurat.setVisibility (View.GONE);
-                    ArrayAdapter<String> adapter2 = new ArrayAdapter<> (SubmitLeave.this,
-                            android.R.layout.simple_spinner_dropdown_item, cuti);
-                    adapter2.setDropDownViewResource (android.R.layout.simple_spinner_dropdown_item);
-                    spinnerCuti.setAdapter (adapter2);
+                    txtCuti.setVisibility (View.GONE);
+                    cvCuti.setVisibility (View.GONE);
+                    txtTujuan.setVisibility (View.GONE);
+                    etTjuan.setVisibility (View.GONE);
+                    cvTjuan.setVisibility (View.GONE);
                     txtIdPengajuan.setText ("1");
                     Log.e ("tag:",txtIdPengajuan.getText ().toString ());
                 }else if (Objects.equals (pengajuan[position], "Ijin")){
                     txtCuti.setVisibility (View.GONE);
                     cvCuti.setVisibility (View.GONE);
-                    txtNoSurat.setVisibility (View.GONE);
-                    cvNoSurat.setVisibility (View.GONE);
+                    txtTujuan.setVisibility (View.GONE);
+                    etTjuan.setVisibility (View.GONE);
+                    cvTjuan.setVisibility (View.GONE);
                     txtIdPengajuan.setText ("2");
                     Log.e ("tag:",txtIdPengajuan.getText ().toString ());
                 }else if (Objects.equals (pengajuan[position], "Sakit")){
                     txtCuti.setVisibility (View.GONE);
                     cvCuti.setVisibility (View.GONE);
-                    txtNoSurat.setVisibility (View.GONE);
-                    cvNoSurat.setVisibility (View.GONE);
+                    txtTujuan.setVisibility (View.GONE);
+                    etTjuan.setVisibility (View.GONE);
+                    cvTjuan.setVisibility (View.GONE);
                     txtIdPengajuan.setText ("3");
                     Log.e ("tag:",txtIdPengajuan.getText ().toString ());
                 }else if (Objects.equals (pengajuan[position], "Lembur")){
                     txtCuti.setVisibility (View.GONE);
                     cvCuti.setVisibility (View.GONE);
-                    txtNoSurat.setVisibility (View.GONE);
-                    cvNoSurat.setVisibility (View.GONE);
+                    txtTujuan.setVisibility (View.GONE);
+                    etTjuan.setVisibility (View.GONE);
+                    cvTjuan.setVisibility (View.GONE);
                     txtIdPengajuan.setText ("4");
                     Log.e ("tag:",txtIdPengajuan.getText ().toString ());
                 }else if (Objects.equals (pengajuan[position], "Cuti Khusus")){
-                    txtCuti.setVisibility (View.GONE);
-                    cvCuti.setVisibility (View.GONE);
-                    txtNoSurat.setVisibility (View.GONE);
-                    cvNoSurat.setVisibility (View.GONE);
+                    txtCuti.setVisibility (View.VISIBLE);
+                    cvCuti.setVisibility (View.VISIBLE);
+                    txtTujuan.setVisibility (View.GONE);
+                    ArrayAdapter<String> adapter2 = new ArrayAdapter<> (SubmitLeave.this,
+                            android.R.layout.simple_spinner_dropdown_item, cuti);
+                    adapter2.setDropDownViewResource (android.R.layout.simple_spinner_dropdown_item);
+                    spinnerCuti.setAdapter (adapter2);
+                    etTjuan.setVisibility (View.GONE);
+                    cvTjuan.setVisibility (View.GONE);
                     txtIdPengajuan.setText ("5");
                     Log.e ("tag:",txtIdPengajuan.getText ().toString ());
                 }else if (Objects.equals (pengajuan[position], "Perjalanan Dinas")){
                     txtCuti.setVisibility (View.GONE);
                     cvCuti.setVisibility (View.GONE);
-                    txtNoSurat.setVisibility (View.VISIBLE);
-                    cvNoSurat.setVisibility (View.VISIBLE);
-                    txtIdPengajuan.setText ("5");
+                    txtTujuan.setVisibility (View.VISIBLE);
+                    etTjuan.setVisibility (View.VISIBLE);
+                    cvTjuan.setVisibility (View.VISIBLE);
+                    txtIdPengajuan.setText ("6");
                     Log.e ("tag:",txtIdPengajuan.getText ().toString ());
                 }
 
                 id_pengajuan = txtIdPengajuan.getText ().toString ();
-
-
             }
 
             @Override
@@ -212,7 +218,6 @@ public class SubmitLeave extends AppCompatActivity {
             }
         });
 
-
         dateAkhir.setOnClickListener (view -> {
             if(hasWindowFocus()){
                 DateDialog dialog=new DateDialog(view);
@@ -222,8 +227,6 @@ public class SubmitLeave extends AppCompatActivity {
             }
         });
 
-
-
         fabPhoto.setOnClickListener (v -> {
             Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(intent, 1);
@@ -231,14 +234,72 @@ public class SubmitLeave extends AppCompatActivity {
 
         btnPengajuan.setOnClickListener (v -> {
             //String img_file_name = date_name+"_"+txtIdPengajuan.getText ().toString ()+"_"+nik;
-            txtCode.setText (getRandomString ());
-            code = txtCode.getText ().toString ();
-            alasan = txtAlasan.getText ().toString ();
-            dateAwalan = dateAwal.getText ().toString ();
-            dateAkhiran = dateAkhir.getText ().toString ();
-            SyncronousLeave (nik,dateAwalan, dateAkhiran, id_pengajuan, alasan, code);
+            if(txtIdPengajuan.getText ().toString ().equals ("6")){
+                txtCode.setText (getRandomString ());
+                code = txtCode.getText ().toString ();
+                alasan = txtAlasan.getText ().toString ();
+                dateAwalan = dateAwal.getText ().toString ();
+                dateAkhiran = dateAkhir.getText ().toString ();
+                tujuan = etTjuan.getText ().toString ();
+                Log.d("button pressed : ", "equals 6");
+                SyncronousTravel(nik, dateAwalan, dateAkhiran, alasan, code, tujuan);
+            }else{
+                txtCode.setText (getRandomString ());
+                code = txtCode.getText ().toString ();
+                alasan = txtAlasan.getText ().toString ();
+                dateAwalan = dateAwal.getText ().toString ();
+                dateAkhiran = dateAkhir.getText ().toString ();
+                Log.d("button pressed : ", "equals else");
+                SyncronousLeave (nik,dateAwalan, dateAkhiran, id_pengajuan, alasan, code);
+            }
         });
 
+
+    }
+
+    private void SyncronousTravel(String nik, String dateAwalan, String dateAkhiran, String alasan, String code, String tujuan) {
+        String url = "http://"+IPADDR+"/"+NMSERVER+"/AttendanceAPI/"+"submitravel.php";
+        ProgressDialog progressDialog = new ProgressDialog (SubmitLeave.this);
+        progressDialog.setTitle ("Processing");
+        progressDialog.setMessage ("Please Wait. . .");
+        progressDialog.setCancelable (true);
+        progressDialog.show ();
+
+        StringRequest strReq = new StringRequest (Request.Method.POST, url, response -> {
+            try{
+                JSONObject jObj = new JSONObject (response);
+                success = jObj.getInt ("success");
+                if(success == 1){
+                    progressDialog.dismiss ();
+                    //String token = jObj.getString ("token");
+                    finish ();
+                    //UploadImage ();
+                }
+                Toast.makeText (getApplicationContext (),jObj.getString ("message"),Toast.LENGTH_LONG).show ();
+
+            }catch (JSONException e){
+                progressDialog.dismiss ();
+                e.printStackTrace ();
+                Log.d("Error :",String.valueOf (e));
+            }
+        }, error -> {
+            progressDialog.dismiss ();
+            Log.e(TAG, "Error: " + error.getMessage());
+            Toast.makeText(SubmitLeave.this, error.getMessage(), Toast.LENGTH_LONG).show();
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<> ();
+                params.put ("nik",nik);
+                params.put ("dateAwal", String.valueOf (dateAwalan));
+                params.put ("dateAkhir", String.valueOf (dateAkhiran));
+                params.put ("alasan", String.valueOf (alasan));
+                params.put ("code", String.valueOf (code));
+                params.put ("tujuan", String.valueOf (tujuan));
+                return params;
+            }
+        };
+        AppController.getInstance ().addToRequestQueue (strReq, tag_json_obj);
 
     }
 
