@@ -1,7 +1,11 @@
 package ricky.hastaprimasolusi.newandrosales.SendNotification;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Data {
+    @SerializedName ("title")
     private String Title;
+    @SerializedName ("message")
     private String Message;
 
     public Data(String title, String message) {

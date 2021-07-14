@@ -1,12 +1,19 @@
 package ricky.hastaprimasolusi.newandrosales.SendNotification;
 
-public class NotificationSender {
-    public Data data;
-    public String to;
+import com.google.gson.annotations.SerializedName;
 
-    public NotificationSender(Data data, String to) {
+public class NotificationSender {
+    @SerializedName ("data")
+    public Data data;
+    @SerializedName ("to")
+    public String to;
+    @SerializedName ("notification")
+    public Notification notification;
+
+    public NotificationSender(Data data, String to, Notification notification) {
         this.data = data;
         this.to = to;
+        this.notification = notification;
     }
 
     public NotificationSender() {

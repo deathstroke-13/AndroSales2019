@@ -42,7 +42,8 @@ public interface RegisterAPI {
                           @Field("LocationLat") String LocationLat,
                           @Field("kodeImei") String kodeImei,
                           @Field("image_data") String img_new_name,
-                          @Field("fake_status")String fake_status);
+                          @Field("fake_status")String fake_status,
+                          @Field ("saran")String saran);
 
     @FormUrlEncoded
     @POST("API/penjualan.php")

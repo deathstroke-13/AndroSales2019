@@ -61,7 +61,7 @@ public class SettingActivity extends AppCompatActivity {
         }else{
             //10.0.2.2
             String dataIP	  = "36.94.17.163";
-            String dataServ   = "androsales_service";
+            String dataServ   = "androsales_service_dev";
             et_ip.setText(dataIP);
             et_folder.setText(dataServ);
             session.createSettingSession(dataIP,dataServ);

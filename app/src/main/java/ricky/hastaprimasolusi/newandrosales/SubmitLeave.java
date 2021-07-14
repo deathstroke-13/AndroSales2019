@@ -25,6 +25,7 @@ import androidx.cardview.widget.CardView;
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +45,7 @@ import ricky.hastaprimasolusi.newandrosales.SendNotification.APIService;
 import ricky.hastaprimasolusi.newandrosales.SendNotification.Client;
 import ricky.hastaprimasolusi.newandrosales.SendNotification.Data;
 import ricky.hastaprimasolusi.newandrosales.SendNotification.MyResponse;
+import ricky.hastaprimasolusi.newandrosales.SendNotification.Notification;
 import ricky.hastaprimasolusi.newandrosales.SendNotification.NotificationSender;
 import ricky.hastaprimasolusi.newandrosales.app.AppController;
 
@@ -89,6 +91,7 @@ public class SubmitLeave extends AppCompatActivity {
     @SuppressLint("NonConstantResourceId")
     @BindView (R.id.fabPhotoPengajuan)
     FloatingActionButton fabPhoto;
+    @BindView (R.id.txtSisacuti) TextView sisaCuti;
 
     @SuppressLint("NonConstantResourceId")
     @BindView (R.id.btnPengajuan)
@@ -134,9 +137,11 @@ public class SubmitLeave extends AppCompatActivity {
 
 
 
+
         byteArrayOutputStream = new ByteArrayOutputStream();
         HashMap<String, String> devId = session.getUserDetails();
         nik = String.valueOf (devId.get(SessionManager.KEY_NIK));
+        sisaCuti(nik);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource (this,
                 R.array.pengajuan, android.R.layout.simple_spinner_dropdown_item);
@@ -149,6 +154,7 @@ public class SubmitLeave extends AppCompatActivity {
                 if(Objects.equals (pengajuan[position], "Cuti")){
                     txtCuti.setVisibility (View.GONE);
                     cvCuti.setVisibility (View.GONE);
+                    sisaCuti.setVisibility (View.VISIBLE);
                     txtTujuan.setVisibility (View.GONE);
                     etTjuan.setVisibility (View.GONE);
                     cvTjuan.setVisibility (View.GONE);
@@ -157,6 +163,7 @@ public class SubmitLeave extends AppCompatActivity {
                 }else if (Objects.equals (pengajuan[position], "Ijin")){
                     txtCuti.setVisibility (View.GONE);
                     cvCuti.setVisibility (View.GONE);
+                    sisaCuti.setVisibility (View.GONE);
                     txtTujuan.setVisibility (View.GONE);
                     etTjuan.setVisibility (View.GONE);
                     cvTjuan.setVisibility (View.GONE);
@@ -165,6 +172,7 @@ public class SubmitLeave extends AppCompatActivity {
                 }else if (Objects.equals (pengajuan[position], "Sakit")){
                     txtCuti.setVisibility (View.GONE);
                     cvCuti.setVisibility (View.GONE);
+                    sisaCuti.setVisibility (View.GONE);
                     txtTujuan.setVisibility (View.GONE);
                     etTjuan.setVisibility (View.GONE);
                     cvTjuan.setVisibility (View.GONE);
@@ -173,6 +181,7 @@ public class SubmitLeave extends AppCompatActivity {
                 }else if (Objects.equals (pengajuan[position], "Lembur")){
                     txtCuti.setVisibility (View.GONE);
                     cvCuti.setVisibility (View.GONE);
+                    sisaCuti.setVisibility (View.GONE);
                     txtTujuan.setVisibility (View.GONE);
                     etTjuan.setVisibility (View.GONE);
                     cvTjuan.setVisibility (View.GONE);
@@ -186,6 +195,7 @@ public class SubmitLeave extends AppCompatActivity {
                             android.R.layout.simple_spinner_dropdown_item, cuti);
                     adapter2.setDropDownViewResource (android.R.layout.simple_spinner_dropdown_item);
                     spinnerCuti.setAdapter (adapter2);
+                    sisaCuti.setVisibility (View.GONE);
                     etTjuan.setVisibility (View.GONE);
                     cvTjuan.setVisibility (View.GONE);
                     txtIdPengajuan.setText ("5");
@@ -193,6 +203,7 @@ public class SubmitLeave extends AppCompatActivity {
                 }else if (Objects.equals (pengajuan[position], "Perjalanan Dinas")){
                     txtCuti.setVisibility (View.GONE);
                     cvCuti.setVisibility (View.GONE);
+                    sisaCuti.setVisibility (View.GONE);
                     txtTujuan.setVisibility (View.VISIBLE);
                     etTjuan.setVisibility (View.VISIBLE);
                     cvTjuan.setVisibility (View.VISIBLE);
@@ -255,6 +266,45 @@ public class SubmitLeave extends AppCompatActivity {
         });
 
 
+    }
+
+    private void sisaCuti(String nik) {
+        String url = "http://"+IPADDR+"/"+NMSERVER+"/AttendanceAPI/"+"sisacuti.php";
+        ProgressDialog progressDialog = new ProgressDialog (SubmitLeave.this);
+        progressDialog.setTitle ("Processing");
+        progressDialog.setMessage ("Please Wait. . .");
+        progressDialog.setCancelable (true);
+        progressDialog.show ();
+
+        StringRequest strReq = new StringRequest (Request.Method.POST, url, response -> {
+            try{
+                JSONObject jObj = new JSONObject (response);
+                success = jObj.getInt ("success");
+                if(success == 1){
+                    progressDialog.dismiss ();
+                    String sisa = jObj.getString ("sisacuti");
+                    sisaCuti.setText (getString(R.string.sisa_cuti)+sisa);
+                }
+
+
+            }catch (JSONException e){
+                progressDialog.dismiss ();
+                e.printStackTrace ();
+                Log.d("Error :",String.valueOf (e));
+            }
+        }, error -> {
+            progressDialog.dismiss ();
+            Log.e(TAG, "Error: " + error.getMessage());
+            Toast.makeText(SubmitLeave.this, error.getMessage(), Toast.LENGTH_LONG).show();
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<> ();
+                params.put ("nik",nik);
+                return params;
+            }
+        };
+        AppController.getInstance ().addToRequestQueue (strReq, tag_json_obj);
     }
 
     private void SyncronousTravel(String nik, String dateAwalan, String dateAkhiran, String alasan, String code, String tujuan) {
@@ -343,9 +393,10 @@ public class SubmitLeave extends AppCompatActivity {
                 if(success == 1){
                     progressDialog.dismiss ();
                     String token = jObj.getString ("token");
+                    String nama = jObj.getString ("nama");
                     finish ();
                     Log.d (TAG,"Token : "+token);
-                    sendNotification(token);
+                    sendNotification(token,nama);
                     //UploadImage ();
                 }
                 Toast.makeText (getApplicationContext (),jObj.getString ("message"),Toast.LENGTH_LONG).show ();
@@ -380,9 +431,32 @@ public class SubmitLeave extends AppCompatActivity {
         AppController.getInstance ().addToRequestQueue (strReq, tag_json_obj);
     }
 
-    private void sendNotification(String token) {
+    private void sendNotification(String token, String nama) {
+        String jenisPengajuan;
+        switch(txtIdPengajuan.getText ().toString ()){
+            case "1":
+                jenisPengajuan = "Cuti";
+                break;
+            case "2":
+                jenisPengajuan = "Ijin";
+                break;
+            case "3":
+                jenisPengajuan = "Sakit";
+                break;
+            case "4":
+                jenisPengajuan = "Lembur";
+                break;
+            case "5":
+                jenisPengajuan = "Cuti Khusus";
+                break;
+            default:
+                jenisPengajuan = "Perjalanan Dinas";
+                break;
+        }
+
         Data data = new Data ("Pengajuan Cuti/Ijin","Testing");
-        NotificationSender sender = new NotificationSender (data, token);
+        NotificationSender sender = new NotificationSender (data, token, new Notification("Pengajuan "+jenisPengajuan+" oleh "+nama, "DMLT-MOB"));
+        Log.d ("request", new Gson ().toJson (sender));
         APIService apiService = Client.getClient ("https://fcm.googleapis.com/").create (APIService.class);
         apiService.sendNotifcation (sender).enqueue (new Callback<MyResponse> () {
             @Override

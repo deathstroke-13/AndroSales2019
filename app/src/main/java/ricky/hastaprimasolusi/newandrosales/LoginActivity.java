@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
             NMSERVER 	= nmServer;
         }else{
             String dataIP	  = "36.94.17.163";
-            String dataServ   = "androsales_service";
+            String dataServ   = "androsales_service_dev";
             String uuid = textUUID.getText().toString();
             et_ip.setText(dataIP);
             et_folder.setText(dataServ);
@@ -310,8 +310,8 @@ public class LoginActivity extends AppCompatActivity implements EasyPermissions.
             try {
                 // Setup HttpURLConnection class to send and receive data from php and mysql
                 conn = (HttpURLConnection)url2.openConnection();
-                conn.setReadTimeout(READ_TIMEOUT);
-                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setReadTimeout(30000);
+                conn.setConnectTimeout(50000);
                 conn.setRequestMethod("POST");
 
                 // setDoInput and setDoOutput method depict handling of both send and receive

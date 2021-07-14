@@ -8,6 +8,8 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -118,11 +120,17 @@ public class LaporanListActivity extends AppCompatActivity {
                 if (value.equals("1")) {
 //                    Toast.makeText(FilterActivity.this, message, Toast.LENGTH_SHORT).show();
 //                    finish();
+                    Log.d ("URL : ", URL);
+                    Log.d ("imei : ", imei);
+                    Log.d ("dateAwal :", dateAwal);
                     recyclerView.setVisibility(View.VISIBLE);
                     results = response.body().getResult();
                     viewAdapter = new RecyclerViewAdapterLaporan(LaporanListActivity.this, results);
                     recyclerView.setAdapter(viewAdapter);
                 } else {
+                    Log.d ("URL : ", URL);
+                    Log.d ("imei : ", imei);
+                    Log.d ("dateAwal :", dateAwal);
                     Toast.makeText(LaporanListActivity.this, message, Toast.LENGTH_SHORT).show();
                     recyclerView.setVisibility(View.GONE);
                 }

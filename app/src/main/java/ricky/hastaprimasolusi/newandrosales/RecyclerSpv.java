@@ -18,6 +18,7 @@ import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
@@ -25,7 +26,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import ricky.hastaprimasolusi.newandrosales.SendNotification.APIService;
+import ricky.hastaprimasolusi.newandrosales.SendNotification.Client;
+import ricky.hastaprimasolusi.newandrosales.SendNotification.Data;
+import ricky.hastaprimasolusi.newandrosales.SendNotification.MyResponse;
+import ricky.hastaprimasolusi.newandrosales.SendNotification.Notification;
+import ricky.hastaprimasolusi.newandrosales.SendNotification.NotificationSender;
 import ricky.hastaprimasolusi.newandrosales.app.AppController;
+
+import static ricky.hastaprimasolusi.newandrosales.app.AppController.TAG;
 
 public class RecyclerSpv extends RecyclerView.Adapter<RecyclerSpv.ViewHolder> {
 
@@ -97,7 +109,7 @@ public class RecyclerSpv extends RecyclerView.Adapter<RecyclerSpv.ViewHolder> {
             materialAlertDialogBuilder.setMessage ("Approve this leave?");
             materialAlertDialogBuilder.setNegativeButton ("No", (dialog, which) -> dialog.cancel ());
             materialAlertDialogBuilder.setPositiveButton ("Yes", (dialog, which) -> {
-                String url = "http://36.94.17.163/androsales_service/AttendanceAPI/"+"acceptdeclinespv.php";
+                String url = "http://36.94.17.163/androsales_service_dev/AttendanceAPI/"+"acceptdeclinespv.php";
                 ProgressDialog progressDialog = new ProgressDialog (context);
                 progressDialog.setTitle ("Processing");
                 progressDialog.setMessage ("Please Wait. . .");
@@ -114,7 +126,12 @@ public class RecyclerSpv extends RecyclerView.Adapter<RecyclerSpv.ViewHolder> {
 
                         progressDialog.dismiss ();
                         if(success == 1){
+                            String token = jObj.getString ("token");
+                            String pengajuan = jObj.getString ("pengajuan");
+                            sendNotification (token, pengajuan,"1");
                             Log.d("Success",jObj.toString ());
+                            listDataSpv.remove (position);
+                            notifyDataSetChanged ();
                         }
                         Toast.makeText (context, jObj.getString("message"),Toast.LENGTH_LONG).show ();
                     } catch (Exception e) {
@@ -152,7 +169,7 @@ public class RecyclerSpv extends RecyclerView.Adapter<RecyclerSpv.ViewHolder> {
             materialAlertDialogBuilder.setMessage ("Decline this leave?");
             materialAlertDialogBuilder.setNegativeButton ("No", (dialog, which) -> dialog.cancel ());
             materialAlertDialogBuilder.setPositiveButton ("Yes", (dialog, which) -> {
-                String url = "http://36.94.17.163/androsales_service/AttendanceAPI/"+"acceptdeclinespv.php";
+                String url = "http://36.94.17.163/androsales_service_dev/AttendanceAPI/"+"acceptdeclinespv.php";
                 ProgressDialog progressDialog = new ProgressDialog (context);
                 progressDialog.setTitle ("Processing");
                 progressDialog.setMessage ("Please Wait. . .");
@@ -169,7 +186,13 @@ public class RecyclerSpv extends RecyclerView.Adapter<RecyclerSpv.ViewHolder> {
 
                         progressDialog.dismiss ();
                         if(success == 1){
+                            String token = jObj.getString ("token");
+                            String pengajuan = jObj.getString ("pengajuan");
+                            sendNotification (token, pengajuan, "2");
                             Log.d("Success",jObj.toString ());
+                            listDataSpv.remove (position);
+                            notifyDataSetChanged ();
+
                         }
                         Toast.makeText (context, jObj.getString("message"),Toast.LENGTH_LONG).show ();
                     } catch (Exception e) {
@@ -220,6 +243,59 @@ public class RecyclerSpv extends RecyclerView.Adapter<RecyclerSpv.ViewHolder> {
             btnDecline= itemView.findViewById (R.id.btnDecline);
 
         }
+    }
+
+    private void sendNotification(String token, String pengajuan, String acc) {
+        String jenisPengajuan, condition;
+        switch(pengajuan){
+            case "1":
+                jenisPengajuan = "Cuti";
+                break;
+            case "2":
+                jenisPengajuan = "Ijin";
+                break;
+            case "3":
+                jenisPengajuan = "Sakit";
+                break;
+            case "4":
+                jenisPengajuan = "Lembur";
+                break;
+            case "5":
+                jenisPengajuan = "Cuti Khusus";
+                break;
+            default:
+                jenisPengajuan = "Perjalanan Dinas";
+                break;
+        }
+
+        if(acc.equals ("1")){
+            condition = "diterima";
+        }else{
+            condition = "ditolak";
+        }
+
+        Data data = new Data ("Pengajuan Cuti/Ijin","Testing");
+        NotificationSender sender = new NotificationSender (data, token, new Notification ("Pengajuan "+jenisPengajuan+" anda "+condition, "DMLT-MOB"));
+        Log.d ("request", new Gson ().toJson (sender));
+        APIService apiService = Client.getClient ("https://fcm.googleapis.com/").create (APIService.class);
+        apiService.sendNotifcation (sender).enqueue (new Callback<MyResponse> () {
+            @Override
+            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                if (response.code() == 200) {
+                    assert response.body () != null;
+                    if (response.body().success != 1) {
+                        Log.d (TAG,"Failed to send");
+                    } else {
+                        Log.d (TAG,"Notification send!");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MyResponse> call, Throwable t) {
+                Log.d (TAG,t.toString ());
+            }
+        });
     }
 
 }

@@ -41,6 +41,7 @@ public class RecyclerLeave extends RecyclerView.Adapter<RecyclerLeave.ViewHolder
         }else if (listData.getStatus ().equals ("Open")){
             holder.txtstatus.setTextColor (Color.BLACK);
         }
+
     }
 
     @Override

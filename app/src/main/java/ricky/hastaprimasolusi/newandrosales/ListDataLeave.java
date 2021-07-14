@@ -34,6 +34,12 @@ public class ListDataLeave {
             case "4":
                 jenis = "Lembur";
                 break;
+            case "5":
+                jenis = "Cuti Khusus";
+                break;
+            case "6":
+                jenis = "Perjalanan Dinas";
+                break;
         }
 
         return jenis;

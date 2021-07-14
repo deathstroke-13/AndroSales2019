@@ -2,6 +2,7 @@ package ricky.hastaprimasolusi.newandrosales;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -37,8 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Objects.requireNonNull (getSupportActionBar ()).setElevation(0);
 
-        myAlarmF();
-        myAlarmL();
+
 
         btPenjualan = findViewById(R.id.bt_penjualan);
         btAbsen = findViewById(R.id.bt_absen);
@@ -147,46 +147,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    }
-
-    public void myAlarmF() {
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 7);
-        calendar.set(Calendar.MINUTE, 40);
-        calendar.set(Calendar.SECOND, 0);
-
-        if (calendar.getTime().compareTo(new Date ()) < 0)
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-
-        Intent intent = new Intent(getApplicationContext(), AbsensiActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        if (alarmManager != null) {
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-
-        }
-
-    }
-
-    public void myAlarmL(){
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 16);
-        calendar.set(Calendar.MINUTE, 30);
-        calendar.set(Calendar.SECOND, 0);
-
-        if (calendar.getTime().compareTo(new Date ()) < 0)
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-
-        Intent intent = new Intent(getApplicationContext(), AbsensiActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        if (alarmManager != null) {
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-
-        }
     }
 
     public void logOut(View view)

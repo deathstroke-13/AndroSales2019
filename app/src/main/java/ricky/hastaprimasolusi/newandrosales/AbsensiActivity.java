@@ -355,7 +355,7 @@ public class AbsensiActivity extends AppCompatActivity implements AdapterView.On
         builder.followRedirects(false);
         builder.followSslRedirects(false);
         builder.cache(null);
-        builder.connectTimeout(5, TimeUnit.SECONDS);
+        builder.connectTimeout(15, TimeUnit.SECONDS);
         OkHttpClient client = builder.build();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -378,7 +378,7 @@ public class AbsensiActivity extends AppCompatActivity implements AdapterView.On
                     }else {
                         UploadImageToServer();
                         Log.d("Tag: ", img_new_name);
-
+                        Log.d ("URL: ", URL);
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         Intent inLogin2 = new Intent(AbsensiActivity.this, MainActivity.class);
                         startActivity(inLogin2);

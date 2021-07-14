@@ -132,8 +132,8 @@ public class BBMActivity extends AppCompatActivity {
     public String file_name     = new SimpleDateFormat ("yyyy_MM_ss").format(new Date ());
     public String img_new_name  = "img_"+file_name+"_"+System.currentTimeMillis();
 
-    EditText et_namaoutlet, et_ket, etLocationLat, etLocationLong;
-    String namaoutlet, ket, LocationLat, LocationLong;
+    EditText et_namaoutlet, et_ket, etLocationLat, etLocationLong, et_keterangan;
+    String namaoutlet, ket, LocationLat, LocationLong, saran;
 
     TextView textIndi;
 
@@ -211,6 +211,7 @@ public class BBMActivity extends AppCompatActivity {
         et_ket          = findViewById(R.id.et_ket);
         etLocationLat   = findViewById(R.id.etLocationLat);
         etLocationLong  = findViewById(R.id.etLocationLong);
+        et_keterangan   = findViewById (R.id.et_keterangan);
 
         mHandler = new Handler();
 
@@ -262,6 +263,7 @@ public class BBMActivity extends AppCompatActivity {
             ket             = et_ket.getText().toString();
             LocationLong    = etLocationLong.getText().toString();
             LocationLat     = etLocationLat.getText().toString();
+            saran           = et_keterangan.getText ().toString ();
 
             Interceptor interceptor = chain -> {
                 Request newRequest = chain.request().newBuilder().addHeader("User-Agent", "Retrofit-Sample-App").build();
@@ -283,7 +285,7 @@ public class BBMActivity extends AppCompatActivity {
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             RegisterAPI api = retrofit.create(RegisterAPI.class);
-            Call<Value> call = api.odometer(namaoutlet, ket, LocationLong, LocationLat, kodeImei, img_new_name, fake_status);
+            Call<Value> call = api.odometer(namaoutlet, ket, LocationLong, LocationLat, kodeImei, img_new_name, fake_status, saran);
             call.enqueue(new Callback<Value> () {
                 @Override
                 public void onResponse(Call<Value> call, Response<Value> response) {

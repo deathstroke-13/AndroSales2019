@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pengajuan Cuti / Ijin"
+            android:text="@string/pengajuan"
             android:textColor="#000"
             android:textSize="26sp"
             android:fontFamily="@font/opensans_bold"
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
-            android:text="@string/pengajuan"
+            android:text="@string/jenis_pengajuan"
             android:textSize="18sp"
             android:fontFamily="@font/opensans_regular"/>
 
@@ -243,6 +243,14 @@
                 android:textColor="#fff"
                 android:textAllCaps="false"/>
         </androidx.cardview.widget.CardView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtSisacuti"
+            android:text="@string/sisa_cuti"
+            android:layout_margin="10dp"
+            />
+
 
         <TextView
             android:layout_width="wrap_content"
